@@ -1,0 +1,12 @@
+package:
+  name: mcu-soc
+  authors:
+    - "Jure Vreča <jure.vreca@ijs.si>"
+
+dependencies:
+  rvj1: { git: "https://github.com/jurevreca12/rvj1.git",  rev: ed0839e }
+  obi:  { git: "https://github.com/jurevreca12/obi.git",   rev: e9a21a6 }
+
+sources:
+    - rtl/mcu_soc.sv
+
