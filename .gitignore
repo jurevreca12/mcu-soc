@@ -1,1 +1,4 @@
 *.swp
+mcu_soc.f
+.bender/
+Bender.lock

@@ -4,9 +4,12 @@ package:
     - "Jure Vreča <jure.vreca@ijs.si>"
 
 dependencies:
-  rvj1: { git: "https://github.com/jurevreca12/rvj1.git",  rev: ed0839e }
-  obi:  { git: "https://github.com/jurevreca12/obi.git",   rev: e9a21a6 }
+  rvj1:            { git: "https://github.com/jurevreca12/rvj1.git",          rev: 64fa76e   }
+  obi:             { git: "https://github.com/pulp-platform/obi.git",         version: 0.1.7 }
+  obi_peripherals: { git: "https://github.com/pulp-platform/obi_peripherals", version: 0.1.1 }
 
 sources:
+    - rtl/mcu_soc_pkg.sv
+    - rtl/obi_ram.sv
     - rtl/mcu_soc.sv
 

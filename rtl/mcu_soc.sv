@@ -1,4 +1,8 @@
-module mcu_soc (
+module mcu_soc #(
+  parameter  string INIT_FILE="",
+  parameter  int    INIT_FILE_BIN=0,
+  parameter  int    MEM_SIZE_WORDS=4096
+  ) (
   input  logic clk,
   input  logic rstn,
 
@@ -22,7 +26,7 @@ module mcu_soc (
   logic                 instr_rsp_error;
   logic                 instr_rsp_valid;
   logic                 instr_rsp_ready;
- 
+
   logic [IdLen-1:0]     obi_instr_aid;
   logic                 obi_instr_areq;
   logic                 obi_instr_agnt;
@@ -36,7 +40,7 @@ module mcu_soc (
   logic                 obi_instr_rready;
   logic [DataWidth-1:0] obi_instr_rdata;
   logic                 obi_instr_rerr;
- 
+
   logic [IdLen-1:0]     data_req_id;
   logic [AddrWidth-1:0] data_req_addr;
   logic [DataWidth-1:0] data_req_data;
@@ -49,7 +53,7 @@ module mcu_soc (
   logic                 data_rsp_error;
   logic                 data_rsp_valid;
   logic                 data_rsp_ready;
-  
+
   logic [IdLen-1:0]     obi_data_aid;
   logic                 obi_data_areq;
   logic                 obi_data_agnt;
@@ -64,11 +68,14 @@ module mcu_soc (
   logic [DataWidth-1:0] obi_data_rdata;
   logic                 obi_data_rerr;
 
-  obi_a_if.master [1:0] obi_a_mgrs;
-  obi_r_if.master [1:0] obi_r_mgrs;
-  
-  obi_a_if.slave [1:0] obi_a_sub;
-  obi_r_if.slave [1:0] obi_r_sub;
+  obi_req_t             core_instr_obi_req;
+  obi_rsp_t             core_instr_obi_rsp;
+  obi_req_t             core_data_obi_req;
+  obi_rsp_t             core_data_obi_rsp;
+  obi_req_t             xbar_mem_obi_req;
+  obi_rsp_t             xbar_mem_obi_rsp;
+  obi_req_t             xbar_uart_obi_req;
+  obi_rsp_t             xbar_uart_obi_rsp;
 
   rvj1_top rvj1_inst (
     .clk_i              (clk),
@@ -113,10 +120,10 @@ module mcu_soc (
     .ADDR_WIDTH(AddrWidth),
     .DATA_WIDTH(DataWidth),
     .IDLEN(IdLen)) m2o_instr (
-    
+
     .clk_i  (clk),
     .rstn_i (rstn),
-    
+
     .mapped_req_id_o     (instr_req_id),
     .mapped_req_addr_o   (instr_req_addr),
     .mapped_req_data_o   (instr_req_data),
@@ -144,15 +151,28 @@ module mcu_soc (
     .obi_rdata_i         (obi_instr_rdata),
     .obi_rerr_i          (obi_instr_rerr)
   );
-  
+  assign core_instr_obi_req.req     = obi_instr_areq;
+  assign core_instr_obi_req.rready  = obi_instr_rready;
+  assign core_instr_obi_req.a.addr  = obi_instr_aaddr;
+  assign core_instr_obi_req.a.we    = obi_instr_awe;
+  assign core_instr_obi_req.a.be    = obi_instr_abe;
+  assign core_instr_obi_req.a.wdata = obi_instr_awdata;
+  assign core_instr_obi_req.a.aid   = obi_instr_aid;
+
+  assign obi_instr_agnt   = core_instr_obi_rsp.gnt;
+  assign obi_instr_rvalid = core_instr_obi_rsp.rvalid;
+  assign obi_instr_rid    = core_instr_obi_rsp.r.rid;
+  assign obi_instr_rdata  = core_instr_obi_rsp.r.rdata;
+  assign obi_instr_err    = core_instr_obi_rsp.r.err;
+
   mapped2obi #(
     .ADDR_WIDTH(AddrWidth),
     .DATA_WIDTH(DataWidth),
     .IDLEN(IdLen)) m2o_data (
-    
+
     .clk_i  (clk),
     .rstn_i (rstn),
-    
+
     .mapped_req_id_o     (data_req_id),
     .mapped_req_addr_o   (data_req_addr),
     .mapped_req_data_o   (data_req_data),
@@ -181,58 +201,85 @@ module mcu_soc (
     .obi_rerr_i          (obi_data_rerr)
   );
 
-  testing_xbar_param #(
-    .ADDR_WIDTH  (AddrWidth),
-    .DATA_WIDTH  (DataWidth),
-    .MANAGERS    (2),
-    .SUBORDINATES(2),
-    .FIFO_DEPTH  (2)
+  assign core_data_obi_req.req     = obi_data_areq;
+  assign core_data_obi_req.rready  = obi_data_rready;
+  assign core_data_obi_req.a.addr  = obi_data_aaddr;
+  assign core_data_obi_req.a.we    = obi_data_awe;
+  assign core_data_obi_req.a.be    = obi_data_abe;
+  assign core_data_obi_req.a.wdata = obi_data_awdata;
+  assign core_data_obi_req.a.aid   = obi_data_aid;
+
+  assign obi_data_agnt   = core_data_obi_rsp.gnt;
+  assign obi_data_rvalid = core_data_obi_rsp.rvalid;
+  assign obi_data_rid    = core_data_obi_rsp.r.rid;
+  assign obi_data_rdata  = core_data_obi_rsp.r.rdata;
+  assign obi_data_err    = core_data_obi_rsp.r.err;
+
+  obi_xbar #(
+    .SbrPortObiCfg      (ObiCfg),
+    .MgrPortObiCfg      (ObiCfg),
+    .sbr_port_obi_req_t (obi_req_t),
+    .sbr_port_a_chan_t  (obi_a_chan_t),
+    .sbr_port_obi_rsp_t (obi_rsp_t),
+    .sbr_port_r_chan_t  (obi_r_chan_t),
+    .mgr_port_obi_req_t (obi_req_t),
+    .mgr_port_obi_rsp_t (obi_rsp_t),
+    .NumSbrPorts        (NumManagers),
+    .NumMgrPorts        (NumSubordinates),
+    .NumMaxTrans        (4),
+    .NumAddrRules       (NumSubordinates),
+    .addr_map_rule_t    (addr_map_rule_t),
+    .UseIdForRouting    (1'b0),
+    .Connectivity       ('1)
   ) xbar (
+    .clk_i            (clk_i),
+    .rstn_i           (rstn_i),
+
+    .testmode_i       (1'b0),
+
+    .sbr_ports_req_i  ({core_instr_obi_req, core_data_obi_req}),
+    .sbr_ports_rsp_o  ({core_instr_obi_rsp, core_data_obi_rsp}),
+
+    .mgr_ports_req_o  ({xbar_mem_obi_req, xbar_uart_obi_req}),
+    .mgr_ports_rsp_i  ({xbar_mem_obi_rsp, xbar_uart_obi_rsp}),
+
+    .addr_map_i       ( addr_map ),
+    .en_default_idx_i ('1),
+    .default_idx_i    ('0)
+  );
+
+  obi_ram #(
+    .INIT_FILE     (INIT_FILE),
+    .INIT_FILE_BIN (INIT_FILE_BIN),
+    .MEM_SIZE_WORDS(MEM_SIZE_WORDS)
+  )mem (
     .clk_i  (clk),
     .rstn_i (rstn),
 
-    .obi_a_chans_mgr(obi_a_mgr),
-    .obi_r_chans_mgr(obi_r_mgr),
-  
-    .obi_a_chans_sub(obi_a_sub),
-    .obi_r_chans_sub(obi_r_sub)
+    .obi_req_i   (xbar_mem_obi_req.req),
+    .obi_gnt_o   (xbar_mem_obi_rsp.gnt),
+    .obi_addr_i  (xbar_mem_obi_req.a.addr),
+    .obi_we_i    (xbar_mem_obi_req.a.we),
+    .obi_wdata_i (xbar_mem_obi_req.a.wdata),
+    .obi_be_i    (xbar_mem_obi_req.a.be),
+
+    .obi_rvalid_o(xbar_mem_obi_rsp.rvalid),
+    .obi_rready_i(xbar_mem_obi_req.rready),
+    .obi_rdata_o (xbar_mem_obi_rsp.rdata)
   );
-  
-  obi_ram #(
-    .INIT_FILE     (),
-    .MEM_SIZE_WORDS(8192)
-  ) ram (
+  assign xbar_mem_obi_rsp.r.rid = '0;
+  assign xbar_mem_obi_rsp.r.err = 1'b0;
+
+  obi_uart #(
+    .ObiCfg   (ObiCfg),
+    .obi_req_t(obi_req_t),
+    .obi_rsp_t(obi_rsp_t)
+  ) uart (
     .clk_i  (clk),
-    .rstn   (rstn),
-    
-    .obi_req_i   (obi_a_sub[SUB_ID_RAM].obi_areq),
-    .obi_gnt_o   (obi_a_sub[SUB_ID_RAM].obi_agnt),
-    .obi_addr_i  (obi_a_sub[SUB_ID_RAM].obi_aadr),
-    .obi_we_i    (obi_a_sub[SUB_ID_RAM].obi_awe),
-    .obi_wdata_i (obi_a_sub[SUB_ID_RAM].obi_awdata),
-    .obi_be_i    (obi_a_sub[SUB_ID_RAM].obi_abe),
+    .rst_ni (rstn),
 
-    .obi_rvalid_o(obi_r_sub[SUB_ID_RAM].obi_rvalid),
-    .obi_rready_i(obi_r_sub[SUB_ID_RAM].obi_rready),
-    .obi_rdata_o (obi_r_sub[SUB_ID_RAM].obi_rdata)
+    .obi_req_i (xbar_uart_obi_req),
+    .obi_rsp_o (xbar_mem_obi_rsp)
   );
-
-  obi_uart uart (
-    .obi_clk_i  (clk),
-    .obi_rstn_i (rstn),
-    
-    .obi_req_i   (obi_a_sub[SUB_ID_UART].obi_areq),
-    .obi_gnt_o   (obi_a_sub[SUB_ID_UART].obi_agnt),
-    .obi_addr_i  (obi_a_sub[SUB_ID_UART].obi_aadr),
-    .obi_we_i    (obi_a_sub[SUB_ID_UART].obi_awe),
-    .obi_wdata_i (obi_a_sub[SUB_ID_UART].obi_awdata),
-    .obi_be_i    (obi_a_sub[SUB_ID_UART].obi_abe),
-
-    .obi_rvalid_o(obi_r_sub[SUB_ID_UART].obi_rvalid),
-    .obi_rready_i(obi_r_sub[SUB_ID_UART].obi_rready),
-    .obi_rdata_o (obi_r_sub[SUB_ID_UART].obi_rdata)
-  );
-
-
 
 endmodule
