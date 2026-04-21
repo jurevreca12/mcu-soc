@@ -77,7 +77,7 @@ module obi_ram #(
   );
 
   skidbuffer #(
-    .DTYPE(logic [DATA_WIDHT-1:0])
+    .DTYPE(logic [DATA_WIDTH-1:0])
   ) response_buffer (
     .clk        (clk_i),
     .rstn       (rstn_i),

@@ -20,13 +20,19 @@ mcu_soc.f:
 $(SW_HEX_FILE): sw/*.c sw/*.h sw/*.S sw/*.ld
 	$(MAKE) -C sw/ compile	
 
-sim: mcu_soc.f $(SW_HEX_FILE)
-	$(VERILATOR) $(VERILATOR_ARGS) --top mcu_soc -f mcu_soc.f -DINIT_FILE=$(SW_HEX_FILE)
+obj_dir/Vmcu_soc_tb: mcu_soc.f $(SW_HEX_FILE)
+	$(VERILATOR) $(VERILATOR_ARGS) --top mcu_soc_tb -f mcu_soc.f -DINIT_FILE=$(SW_HEX_FILE)
  
+dump.fst: obj_dir/Vmcu_soc_tb
+	./obj_dir/Vmcu_soc_tb
+
+sim: dump.fst
+
 clean:
-	rm mcu_soc.f
-	rm trace.fst
-	$(MAKE) -c sw/ clean
+	rm -f mcu_soc.f
+	rm -f trace.fst
+	rm -rf obj_dir/
+	$(MAKE) -C sw/ clean
 
 docker-build:
 	docker build -t iic-osic-tools-plus:0.1 .

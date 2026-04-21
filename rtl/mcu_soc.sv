@@ -1,4 +1,4 @@
-module mcu_soc #(
+module mcu_soc import mcu_soc_pkg::*; #(
   parameter  string INIT_FILE="",
   parameter  int    INIT_FILE_BIN=0,
   parameter  int    MEM_SIZE_WORDS=4096
@@ -18,6 +18,7 @@ module mcu_soc #(
   logic [AddrWidth-1:0] instr_req_addr;
   logic [DataWidth-1:0] instr_req_data;
   logic [NBytes-1:0]    instr_req_strobe;
+  logic                 instr_req_write;
   logic                 instr_req_valid;
   logic                 instr_req_ready;
 
@@ -45,6 +46,7 @@ module mcu_soc #(
   logic [AddrWidth-1:0] data_req_addr;
   logic [DataWidth-1:0] data_req_data;
   logic [NBytes-1:0]    data_req_strobe;
+  logic                 data_req_write;
   logic                 data_req_valid;
   logic                 data_req_ready;
 
@@ -85,6 +87,7 @@ module mcu_soc #(
     .instr_req_addr_o   (instr_req_addr),
     .instr_req_data_o   (instr_req_data),
     .instr_req_strobe_o (instr_req_strobe),
+    .instr_req_write_o  (instr_req_write),
     .instr_req_valid_o  (instr_req_valid),
     .instr_req_ready_i  (instr_req_ready),
 
@@ -124,18 +127,19 @@ module mcu_soc #(
     .clk_i  (clk),
     .rstn_i (rstn),
 
-    .mapped_req_id_o     (instr_req_id),
-    .mapped_req_addr_o   (instr_req_addr),
-    .mapped_req_data_o   (instr_req_data),
-    .mapped_req_strobe_o (instr_req_strobe),
-    .mapped_req_valid_o  (instr_req_valid),
-    .mapped_req_ready_i  (instr_req_ready),
+    .mapped_req_id_i     (instr_req_id),
+    .mapped_req_addr_i   (instr_req_addr),
+    .mapped_req_data_i   (instr_req_data),
+    .mapped_req_strobe_i (instr_req_strobe),
+    .mapped_req_write_i  (instr_req_write),
+    .mapped_req_valid_i  (instr_req_valid),
+    .mapped_req_ready_o  (instr_req_ready),
 
-    .mapped_rsp_id_i     (instr_rsp_id),
-    .mapped_rsp_data_i   (instr_rsp_data),
-    .mapped_rsp_error_i  (instr_rsp_error),
-    .mapped_rsp_valid_i  (instr_rsp_valid),
-    .mapped_rsp_ready_o  (instr_rsp_ready),
+    .mapped_rsp_id_o     (instr_rsp_id),
+    .mapped_rsp_data_o   (instr_rsp_data),
+    .mapped_rsp_error_o  (instr_rsp_error),
+    .mapped_rsp_valid_o  (instr_rsp_valid),
+    .mapped_rsp_ready_i  (instr_rsp_ready),
 
     .obi_aid_o           (obi_instr_aid),
     .obi_areq_o          (obi_instr_areq),
@@ -163,7 +167,7 @@ module mcu_soc #(
   assign obi_instr_rvalid = core_instr_obi_rsp.rvalid;
   assign obi_instr_rid    = core_instr_obi_rsp.r.rid;
   assign obi_instr_rdata  = core_instr_obi_rsp.r.rdata;
-  assign obi_instr_err    = core_instr_obi_rsp.r.err;
+  assign obi_instr_rerr   = core_instr_obi_rsp.r.err;
 
   mapped2obi #(
     .ADDR_WIDTH(AddrWidth),
@@ -173,18 +177,19 @@ module mcu_soc #(
     .clk_i  (clk),
     .rstn_i (rstn),
 
-    .mapped_req_id_o     (data_req_id),
-    .mapped_req_addr_o   (data_req_addr),
-    .mapped_req_data_o   (data_req_data),
-    .mapped_req_strobe_o (data_req_strobe),
-    .mapped_req_valid_o  (data_req_valid),
-    .mapped_req_ready_i  (data_req_ready),
+    .mapped_req_id_i     (data_req_id),
+    .mapped_req_addr_i   (data_req_addr),
+    .mapped_req_data_i   (data_req_data),
+    .mapped_req_strobe_i (data_req_strobe),
+    .mapped_req_write_i  (data_req_write),
+    .mapped_req_valid_i  (data_req_valid),
+    .mapped_req_ready_o  (data_req_ready),
 
-    .mapped_rsp_id_i     (data_rsp_id),
-    .mapped_rsp_data_i   (data_rsp_data),
-    .mapped_rsp_error_i  (data_rsp_error),
-    .mapped_rsp_valid_i  (data_rsp_valid),
-    .mapped_rsp_ready_o  (data_rsp_ready),
+    .mapped_rsp_id_o     (data_rsp_id),
+    .mapped_rsp_data_o   (data_rsp_data),
+    .mapped_rsp_error_o  (data_rsp_error),
+    .mapped_rsp_valid_o  (data_rsp_valid),
+    .mapped_rsp_ready_i  (data_rsp_ready),
 
     .obi_aid_o           (obi_data_aid),
     .obi_areq_o          (obi_data_areq),
@@ -213,7 +218,7 @@ module mcu_soc #(
   assign obi_data_rvalid = core_data_obi_rsp.rvalid;
   assign obi_data_rid    = core_data_obi_rsp.r.rid;
   assign obi_data_rdata  = core_data_obi_rsp.r.rdata;
-  assign obi_data_err    = core_data_obi_rsp.r.err;
+  assign obi_data_rerr   = core_data_obi_rsp.r.err;
 
   obi_xbar #(
     .SbrPortObiCfg      (ObiCfg),
@@ -232,18 +237,18 @@ module mcu_soc #(
     .UseIdForRouting    (1'b0),
     .Connectivity       ('1)
   ) xbar (
-    .clk_i            (clk_i),
-    .rstn_i           (rstn_i),
+    .clk_i            (clk),
+    .rst_ni           (rstn),
 
     .testmode_i       (1'b0),
 
     .sbr_ports_req_i  ({core_instr_obi_req, core_data_obi_req}),
     .sbr_ports_rsp_o  ({core_instr_obi_rsp, core_data_obi_rsp}),
 
-    .mgr_ports_req_o  ({xbar_mem_obi_req, xbar_uart_obi_req}),
-    .mgr_ports_rsp_i  ({xbar_mem_obi_rsp, xbar_uart_obi_rsp}),
+    .mgr_ports_req_o  ({xbar_uart_obi_req, xbar_mem_obi_req}),
+    .mgr_ports_rsp_i  ({xbar_uart_obi_rsp, xbar_mem_obi_rsp}),
 
-    .addr_map_i       ( addr_map ),
+    .addr_map_i       ( Rvj1AddrMap ),
     .en_default_idx_i ('1),
     .default_idx_i    ('0)
   );
@@ -252,20 +257,20 @@ module mcu_soc #(
     .INIT_FILE     (INIT_FILE),
     .INIT_FILE_BIN (INIT_FILE_BIN),
     .MEM_SIZE_WORDS(MEM_SIZE_WORDS)
-  )mem (
+  ) mem (
     .clk_i  (clk),
     .rstn_i (rstn),
 
-    .obi_req_i   (xbar_mem_obi_req.req),
-    .obi_gnt_o   (xbar_mem_obi_rsp.gnt),
-    .obi_addr_i  (xbar_mem_obi_req.a.addr),
-    .obi_we_i    (xbar_mem_obi_req.a.we),
-    .obi_wdata_i (xbar_mem_obi_req.a.wdata),
-    .obi_be_i    (xbar_mem_obi_req.a.be),
+    .obi_areq_i   (xbar_mem_obi_req.req),
+    .obi_agnt_o   (xbar_mem_obi_rsp.gnt),
+    .obi_aaddr_i  (xbar_mem_obi_req.a.addr),
+    .obi_awe_i    (xbar_mem_obi_req.a.we),
+    .obi_awdata_i (xbar_mem_obi_req.a.wdata),
+    .obi_abe_i    (xbar_mem_obi_req.a.be),
 
-    .obi_rvalid_o(xbar_mem_obi_rsp.rvalid),
-    .obi_rready_i(xbar_mem_obi_req.rready),
-    .obi_rdata_o (xbar_mem_obi_rsp.rdata)
+    .obi_rvalid_o (xbar_mem_obi_rsp.rvalid),
+    .obi_rready_i (xbar_mem_obi_req.rready),
+    .obi_rdata_o  (xbar_mem_obi_rsp.r.rdata)
   );
   assign xbar_mem_obi_rsp.r.rid = '0;
   assign xbar_mem_obi_rsp.r.err = 1'b0;
@@ -279,7 +284,23 @@ module mcu_soc #(
     .rst_ni (rstn),
 
     .obi_req_i (xbar_uart_obi_req),
-    .obi_rsp_o (xbar_mem_obi_rsp)
+    .obi_rsp_o (xbar_mem_obi_rsp),
+
+
+    .rxd_i  (rx),
+    .txd_o  (tx),
+
+    .irq_o  (),
+    .irq_no (),
+
+    .cts_ni ('1),
+    .dsr_ni ('1),
+    .ri_ni  ('1),
+    .cd_ni  ('1),
+    .rts_no (),
+    .dtr_no (),
+    .out1_no(),
+    .out2_no()
   );
 
 endmodule

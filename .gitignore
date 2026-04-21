@@ -2,3 +2,5 @@
 mcu_soc.f
 .bender/
 Bender.lock
+dump.fst
+obj_dir/

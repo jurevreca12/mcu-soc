@@ -1,7 +1,7 @@
 package mcu_soc_pkg;
 
-  localparam obi_pkg::obi_cfg_t ObiCfg = '{
-    UseRReday:   1'b1,
+  localparam obi_pkg::obi_cfg_t ManObiCfg = '{
+    UseRReady:   1'b1,
     CombGnt:     1'b0,
     AddrWidth:   32,
     DataWidth:   32,
@@ -10,32 +10,73 @@ package mcu_soc_pkg;
     BeFull:      1'b1,
     OptionalCfg: '0
   };
+  
+  localparam obi_pkg::obi_cfg_t SubObiCfg = '{
+    UseRReady:   1'b1,
+    CombGnt:     1'b0,
+    AddrWidth:   32,
+    DataWidth:   32,
+    IdWidth:     0,
+    Integrity:   1'b0,
+    BeFull:      1'b1,
+    OptionalCfg: '0
+  };
 
   typedef struct packed {
-    logic [ObiCfg.AddrWidth-1:0]   addr;
-    logic                          we;
-    logic [ObiCfg.DataWidth/8-1:0] be;
-    logic [ObiCfg.DataWidth-1:0]   wdata;
-    logic [ObiCfg.IdWidth-1:0]     aid;
-  } obi_a_chan_t;
+    logic [ManObiCfg.AddrWidth-1:0]   addr;
+    logic                             we;
+    logic [ManObiCfg.DataWidth/8-1:0] be;
+    logic [ManObiCfg.DataWidth-1:0]   wdata;
+    logic [ManObiCfg.IdWidth-1:0]     aid;
+    logic                             a_optional;
+  } man_obi_a_chan_t;
 
   typedef struct packed {
-    obi_a_chan_t a;
-    logic        req;
-    logic        rready;
-  } obi_req_t;
+    man_obi_a_chan_t a;
+    logic            req;
+    logic            rready;
+  } man_obi_req_t;
 
   typedef struct packed {
-    logic [ObiCfg.DataWidth-1:0] rdata;
-    logic [ObiCfg.IdWidth-1:0]   rid;
-    logic                        err;
-  } obi_r_chan_t;
+    logic [ManObiCfg.DataWidth-1:0] rdata;
+    logic [ManObiCfg.IdWidth-1:0]   rid;
+    logic                           err;
+    logic                           r_optional;
+  } man_obi_r_chan_t;
 
   typedef struct packed {
-    obi_r_chan_t r;
-    logic        gnt;
-    logic        rvalid;
-  } obi_rsp_t;
+    man_obi_r_chan_t r;
+    logic            gnt;
+    logic            rvalid;
+  } man_obi_rsp_t;
+  
+  typedef struct packed {
+    logic [ManObiCfg.AddrWidth-1:0]   addr;
+    logic                             we;
+    logic [ManObiCfg.DataWidth/8-1:0] be;
+    logic [ManObiCfg.DataWidth-1:0]   wdata;
+    logic [ManObiCfg.IdWidth-1:0]     aid;
+    logic                             a_optional;
+  } man_obi_a_chan_t;
+
+  typedef struct packed {
+    man_obi_a_chan_t a;
+    logic            req;
+    logic            rready;
+  } man_obi_req_t;
+
+  typedef struct packed {
+    logic [ManObiCfg.DataWidth-1:0] rdata;
+    logic [ManObiCfg.IdWidth-1:0]   rid;
+    logic                           err;
+    logic                           r_optional;
+  } man_obi_r_chan_t;
+
+  typedef struct packed {
+    man_obi_r_chan_t r;
+    logic            gnt;
+    logic            rvalid;
+  } man_obi_rsp_t;
 
   typedef struct packed {
     logic [31:0] idx;
@@ -50,7 +91,7 @@ package mcu_soc_pkg;
     XbarUart = 1
   } xbar_sub_e;
 
-  localparam addr_map_rule_t [NumSubordinates-1:0] Rvj1AddrMap = {
+  localparam addr_map_rule_t [NumSubordinates-1:0] Rvj1AddrMap = '{
       '{idx: XbarMem,  start_addr: 32'h8000_0000, end_addr: 32'h8000_4000},
       '{idx: XbarUart, start_addr: 32'h6000_0000, end_addr: 32'h6000_0200}
   };
