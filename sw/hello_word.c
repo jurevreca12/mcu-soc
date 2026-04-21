@@ -11,7 +11,8 @@
 
 void sleep(void) {
     int i;
-    for (i=0; i < SLEEP_CYCLES; i++);
+    for (i=0; i < SLEEP_CYCLES; i++)
+        asm volatile("nop" ::: "memory");
 }
 
 int main() {
