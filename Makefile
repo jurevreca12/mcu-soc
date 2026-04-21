@@ -10,7 +10,7 @@ BENDER    ?= bender
 VERILATOR ?= verilator
 
 VERILATOR_ARGS  = --timescale 1ns/1ps --binary -Wno-fatal -Wno-style
-VERILATOR_ARGS += --trace-fst --trace-structs --trace-params
+VERILATOR_ARGS += --trace-fst --trace-structs --trace-params -DRVFI
 VERILATOR_ARGS += -GINIT_FILE=\"/foss/designs/mcu-soc//sw/bin/hello_word.hex\"
 
 MAKEFILE_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))

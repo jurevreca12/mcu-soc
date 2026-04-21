@@ -6,7 +6,7 @@ module obi_ram #(
   parameter  int    IDLEN=4,
   parameter  int    MEM_SIZE_WORDS,
   localparam int    NBytes=(DATA_WIDTH / 8),
-  localparam int    MemSizeBytes=(MEM_SIZE_WORDS / 8)
+  localparam int    MemAddrWidth=$clog2(MEM_SIZE_WORDS)
 ) (
   input  logic clk_i,
   input  logic rstn_i,
@@ -27,16 +27,16 @@ module obi_ram #(
 );
 
   typedef struct packed {
-    logic [IDLEN-1:0]                id;
-    logic [$clog2(MemSizeBytes)-1:2] addr;
-    logic [DATA_WIDTH-1:0]           data;
-    logic [NBytes-1:0]               strobe;
-    logic                            write;
+    logic [IDLEN-1:0]        id;
+    logic [MemAddrWidth-1:0] addr;
+    logic [DATA_WIDTH-1:0]   data;
+    logic [NBytes-1:0]       strobe;
+    logic                    write;
   } obi_req_t;
 
   typedef struct packed {
-    logic [IDLEN-1:0]                id;
-    logic [DATA_WIDTH-1:0]           data;
+    logic [IDLEN-1:0]      id;
+    logic [DATA_WIDTH-1:0] data;
   } obi_rsp_t;
 
   obi_req_t act_req;
@@ -54,7 +54,7 @@ module obi_ram #(
 
     .input_valid (obi_areq_i),
     .input_ready (obi_agnt_o),
-    .input_data  ({obi_aid_i, obi_aaddr_i[$clog2(MemSizeBytes)-1:2], obi_awdata_i, obi_abe_i, obi_awe_i}),
+    .input_data  ({obi_aid_i, obi_aaddr_i[MemAddrWidth+1:2], obi_awdata_i, obi_abe_i, obi_awe_i}),
 
     .output_valid(act_req_valid),
     .output_ready(act_req_ready),
