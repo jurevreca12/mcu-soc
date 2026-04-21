@@ -19,6 +19,7 @@ RISCV_AS      ?= $(RISCV_PREFIX)as
 RISCV_AR      ?= $(RISCV_PREFIX)ar
 RISCV_LD      ?= $(RISCV_PREFIX)ld
 RISCV_STRIP   ?= $(RISCV_PREFIX)strip
+RISCV_BIN2HEX ?= riscv32-unknown-elf-bin2hex
 
 # Compiler and linker flags
 RISCV_FLAGS ?= -march=$(RISCV_MARCH) -mabi=$(RISCV_MABI) -mcmodel=medany \
@@ -90,9 +91,12 @@ $(BINDIR)/%.dump: $(BINDIR)/%.elf
 	$(RISCV_OBJDUMP) -D -s $< >$@
 
 # Convert ELF to hex format for easy loading into simulators or hardware
-$(BINDIR)/%.hex: $(BINDIR)/%.elf
+$(BINDIR)/%.bin: $(BINDIR)/%.elf
 	mkdir -p $(dir $@)
-	$(RISCV_OBJCOPY) -O verilog $< $@
+	$(RISCV_OBJCOPY) -O binary $< $@
+
+$(BINDIR)/%.hex: $(BINDIR)/%.bin
+	$(RISCV_BIN2HEX) -w 32 $< $@
 
 # Phonies
 .PHONY: all clean compile

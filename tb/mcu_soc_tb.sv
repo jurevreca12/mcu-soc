@@ -6,7 +6,7 @@ module mcu_soc_tb #(
 ) ();
 
   logic clk, rstn, tx, rx;
-  always #1 clk = ~clk;  
+  always #1 clk = ~clk;
 
   mcu_soc #(
     .INIT_FILE      (INIT_FILE),
@@ -23,6 +23,7 @@ module mcu_soc_tb #(
 
   initial begin
   $display("Starting simulation of MCU.");
+  $display("Initialiting memory with: %s", INIT_FILE);
   $dumpfile("dump.fst");
   $dumpvars();
   clk = 1'b0;

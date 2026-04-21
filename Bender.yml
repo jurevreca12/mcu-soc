@@ -7,7 +7,7 @@ dependencies:
   rvj1:            { git: "https://github.com/jurevreca12/rvj1.git",          rev: 6444908   }
   mapped2obi:      { git: "https://github.com/jurevreca12/mapped2obi.git",    rev: 786644b   }
   obi:             { git: "https://github.com/pulp-platform/obi.git",         version: 0.1.7 }
-  obi_peripherals: { git: "https://github.com/pulp-platform/obi_peripherals", version: 0.1.1 }
+  obi_peripherals: { git: "https://github.com/jurevreca12/obi_peripherals",   rev: 1654d70e }
 
 sources:
     - rtl/mcu_soc_pkg.sv

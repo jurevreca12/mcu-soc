@@ -256,11 +256,13 @@ module mcu_soc import mcu_soc_pkg::*; #(
   obi_ram #(
     .INIT_FILE     (INIT_FILE),
     .INIT_FILE_BIN (INIT_FILE_BIN),
-    .MEM_SIZE_WORDS(MEM_SIZE_WORDS)
+    .MEM_SIZE_WORDS(MEM_SIZE_WORDS),
+    .IDLEN         (IdLen)
   ) mem (
     .clk_i  (clk),
     .rstn_i (rstn),
 
+    .obi_aid_i    (xbar_mem_obi_req.a.aid),
     .obi_areq_i   (xbar_mem_obi_req.req),
     .obi_agnt_o   (xbar_mem_obi_rsp.gnt),
     .obi_aaddr_i  (xbar_mem_obi_req.a.addr),
@@ -268,6 +270,7 @@ module mcu_soc import mcu_soc_pkg::*; #(
     .obi_awdata_i (xbar_mem_obi_req.a.wdata),
     .obi_abe_i    (xbar_mem_obi_req.a.be),
 
+    .obi_rid_o    (xbar_mem_obi_rsp.r.rid),
     .obi_rvalid_o (xbar_mem_obi_rsp.rvalid),
     .obi_rready_i (xbar_mem_obi_req.rready),
     .obi_rdata_o  (xbar_mem_obi_rsp.r.rdata)
@@ -284,8 +287,7 @@ module mcu_soc import mcu_soc_pkg::*; #(
     .rst_ni (rstn),
 
     .obi_req_i (xbar_uart_obi_req),
-    .obi_rsp_o (xbar_mem_obi_rsp),
-
+    .obi_rsp_o (xbar_uart_obi_rsp),
 
     .rxd_i  (rx),
     .txd_o  (tx),

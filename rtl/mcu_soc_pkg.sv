@@ -1,6 +1,6 @@
 package mcu_soc_pkg;
 
-  localparam obi_pkg::obi_cfg_t ManObiCfg = '{
+  localparam obi_pkg::obi_cfg_t ObiCfg = '{
     UseRReady:   1'b1,
     CombGnt:     1'b0,
     AddrWidth:   32,
@@ -10,73 +10,34 @@ package mcu_soc_pkg;
     BeFull:      1'b1,
     OptionalCfg: '0
   };
-  
-  localparam obi_pkg::obi_cfg_t SubObiCfg = '{
-    UseRReady:   1'b1,
-    CombGnt:     1'b0,
-    AddrWidth:   32,
-    DataWidth:   32,
-    IdWidth:     0,
-    Integrity:   1'b0,
-    BeFull:      1'b1,
-    OptionalCfg: '0
-  };
 
   typedef struct packed {
-    logic [ManObiCfg.AddrWidth-1:0]   addr;
-    logic                             we;
-    logic [ManObiCfg.DataWidth/8-1:0] be;
-    logic [ManObiCfg.DataWidth-1:0]   wdata;
-    logic [ManObiCfg.IdWidth-1:0]     aid;
-    logic                             a_optional;
-  } man_obi_a_chan_t;
+    logic [ObiCfg.AddrWidth-1:0]   addr;
+    logic                          we;
+    logic [ObiCfg.DataWidth/8-1:0] be;
+    logic [ObiCfg.DataWidth-1:0]   wdata;
+    logic [ObiCfg.IdWidth-1:0]     aid;
+    logic                          a_optional;
+  } obi_a_chan_t;
 
   typedef struct packed {
-    man_obi_a_chan_t a;
+    obi_a_chan_t a;
     logic            req;
     logic            rready;
-  } man_obi_req_t;
+  } obi_req_t;
 
   typedef struct packed {
-    logic [ManObiCfg.DataWidth-1:0] rdata;
-    logic [ManObiCfg.IdWidth-1:0]   rid;
-    logic                           err;
-    logic                           r_optional;
-  } man_obi_r_chan_t;
+    logic [ObiCfg.DataWidth-1:0] rdata;
+    logic [ObiCfg.IdWidth-1:0]   rid;
+    logic                        err;
+    logic                        r_optional;
+  } obi_r_chan_t;
 
   typedef struct packed {
-    man_obi_r_chan_t r;
+    obi_r_chan_t     r;
     logic            gnt;
     logic            rvalid;
-  } man_obi_rsp_t;
-  
-  typedef struct packed {
-    logic [ManObiCfg.AddrWidth-1:0]   addr;
-    logic                             we;
-    logic [ManObiCfg.DataWidth/8-1:0] be;
-    logic [ManObiCfg.DataWidth-1:0]   wdata;
-    logic [ManObiCfg.IdWidth-1:0]     aid;
-    logic                             a_optional;
-  } man_obi_a_chan_t;
-
-  typedef struct packed {
-    man_obi_a_chan_t a;
-    logic            req;
-    logic            rready;
-  } man_obi_req_t;
-
-  typedef struct packed {
-    logic [ManObiCfg.DataWidth-1:0] rdata;
-    logic [ManObiCfg.IdWidth-1:0]   rid;
-    logic                           err;
-    logic                           r_optional;
-  } man_obi_r_chan_t;
-
-  typedef struct packed {
-    man_obi_r_chan_t r;
-    logic            gnt;
-    logic            rvalid;
-  } man_obi_rsp_t;
+  } obi_rsp_t;
 
   typedef struct packed {
     logic [31:0] idx;
