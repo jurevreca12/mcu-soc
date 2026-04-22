@@ -14,3 +14,7 @@ sources:
     - rtl/obi_ram.sv
     - rtl/mcu_soc.sv
     - tb/mcu_soc_tb.sv
+
+    - target: xilinx
+      files:
+        - impl/vivado/mcu_soc_xilinx.sv
