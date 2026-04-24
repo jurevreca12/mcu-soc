@@ -1,5 +1,5 @@
 module obi_ram #(
-  parameter  string INIT_FILE="",
+  parameter  INIT_FILE="",
   parameter  int    INIT_FILE_BIN=0,
   parameter  int    DATA_WIDTH=32,
   parameter  int    ADDR_WIDTH=32,

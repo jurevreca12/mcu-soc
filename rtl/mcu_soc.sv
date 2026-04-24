@@ -1,5 +1,5 @@
 module mcu_soc import mcu_soc_pkg::*; #(
-  parameter  string INIT_FILE="",
+  parameter  INIT_FILE="",
   parameter  int    INIT_FILE_BIN=0,
   parameter  int    MEM_SIZE_WORDS=4096
   ) (
@@ -275,8 +275,6 @@ module mcu_soc import mcu_soc_pkg::*; #(
     .obi_rready_i (xbar_mem_obi_req.rready),
     .obi_rdata_o  (xbar_mem_obi_rsp.r.rdata)
   );
-  assign xbar_mem_obi_rsp.r.rid = '0;
-  assign xbar_mem_obi_rsp.r.err = 1'b0;
 
   obi_uart #(
     .ObiCfg   (ObiCfg),

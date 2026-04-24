@@ -2,3 +2,7 @@ output/
 sources_vivado.tcl
 vivado*.log
 vivado*.jou
+.Xil/
+clockInfo.txt
+xvlog.pb
+xvlog.log
