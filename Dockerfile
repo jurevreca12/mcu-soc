@@ -43,4 +43,17 @@ RUN git clone https://github.com/YosysHQ/riscv-formal && \
     sed -i "s/with\sopen(f\"\.\.\/\.\./with open(f\"\/foss\/tools\/riscv-formal/" \
         /foss/tools/riscv-formal/checks/genchecks.py
 
+RUN git clone https://github.com/riscv-collab/riscv-openocd --recurse-submodules && \
+    cd riscv-openocd && \
+    git checkout eb01c63 && \
+    git submodule update && \
+    mkdir /foss/tools/riscv-openocd/ && \
+    ./bootstrap && \
+    ./configure --prefix=/foss/tools/riscv-openocd/ --enable-internal-jimtcl && \
+    make && \
+    make install && \
+    cd .. && \
+    rm -rf riscv-openocd && \
+    ln -s /foss/tools/riscv-openocd/bin/openocd /foss/tools/bin/openocd
+
 WORKDIR /foss/designs/mcu-soc

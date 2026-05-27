@@ -6,6 +6,12 @@ module mcu_soc import mcu_soc_pkg::*; #(
   input  logic clk,
   input  logic rstn,
 
+  input  logic jtag_tck_i,
+  input  logic jtag_tdi_i,
+  output logic jtag_tdo_o,
+  input  logic jtag_tms_i,
+  input  logic jtag_trst_ni,
+
   output logic tx,
   input  logic rx
 );
@@ -13,6 +19,16 @@ module mcu_soc import mcu_soc_pkg::*; #(
   localparam int AddrWidth = 32;
   localparam int DataWidth = 32;
   localparam int NBytes = (DataWidth / 8);
+
+  localparam dm::hartinfo_t HartInfo = '{
+    zero0: '0,
+    zero1: '0,
+    nscratch: 2,
+    dataaccess: 1'b1,
+    datasize: dm::DataCount,
+    dataaddr: dm::DataAddr
+  };
+  dm::hartinfo_t hartinfo = HartInfo;
 
   logic [IdLen-1:0]     obi_instr_aid;
   logic                 obi_instr_areq;
@@ -42,16 +58,37 @@ module mcu_soc import mcu_soc_pkg::*; #(
   logic [DataWidth-1:0] obi_data_rdata;
   logic                 obi_data_rerr;
 
+  logic                 debug_req;
+  logic                 dmi_rst_n;
+  logic                 dmi_req_valid;
+  logic                 dmi_req_ready;
+  dm::dmi_req_t         dmi_req;
+  logic                 dmi_resp_valid;
+  logic                 dmi_resp_ready;
+  dm::dmi_resp_t        dmi_resp;
+
   obi_req_t             core_instr_obi_req;
   obi_rsp_t             core_instr_obi_rsp;
   obi_req_t             core_data_obi_req;
   obi_rsp_t             core_data_obi_rsp;
+  obi_req_t             dbg_obi_man_req;
+  obi_rsp_t             dbg_obi_man_rsp;
+  obi_req_t             xbar_obi_sub_req;
+  obi_rsp_t             xbar_obi_sub_rsp;
   obi_req_t             xbar_mem_obi_req;
   obi_rsp_t             xbar_mem_obi_rsp;
   obi_req_t             xbar_uart_obi_req;
   obi_rsp_t             xbar_uart_obi_rsp;
+  
 
-  rvj1_obi rvj1_inst (
+  rvj1_obi #(
+    .BootAddr (McuBootAddr),
+    .DmRomAddr(McuDmRomAddr),
+    .MVendorId(McuMVendorId),
+    .MArchId  (McuMArchId),
+    .MImpId   (McuMImpId),
+    .MHartId  (McuMHartId)
+  ) rvj1_inst (
     .clk_i          (clk),
     .rstn_i         (rstn),
 
@@ -88,7 +125,9 @@ module mcu_soc import mcu_soc_pkg::*; #(
     .irq_sw_i       (1'b0),
     .irq_lcofi_i    (1'b0),
     .irq_platform_i ('0),
-    .irq_nmi_i      (1'b0)
+    .irq_nmi_i      (1'b0),
+
+    .debug_req_i    (debug_req)
   );
 
   assign core_instr_obi_req.req     = obi_instr_areq;
@@ -141,11 +180,11 @@ module mcu_soc import mcu_soc_pkg::*; #(
 
     .testmode_i       (1'b0),
 
-    .sbr_ports_req_i  ({core_instr_obi_req, core_data_obi_req}),
-    .sbr_ports_rsp_o  ({core_instr_obi_rsp, core_data_obi_rsp}),
+    .sbr_ports_req_i  ({dbg_obi_man_req, core_instr_obi_req, core_data_obi_req}),
+    .sbr_ports_rsp_o  ({dbg_obi_man_rsp, core_instr_obi_rsp, core_data_obi_rsp}),
 
-    .mgr_ports_req_o  ({xbar_uart_obi_req, xbar_mem_obi_req}),
-    .mgr_ports_rsp_i  ({xbar_uart_obi_rsp, xbar_mem_obi_rsp}),
+    .mgr_ports_req_o  ({xbar_obi_sub_req, xbar_uart_obi_req, xbar_mem_obi_req}),
+    .mgr_ports_rsp_i  ({xbar_obi_sub_rsp, xbar_uart_obi_rsp, xbar_mem_obi_rsp}),
 
     .addr_map_i       ( Rvj1AddrMap ),
     .en_default_idx_i ('1),
@@ -173,6 +212,76 @@ module mcu_soc import mcu_soc_pkg::*; #(
     .obi_rvalid_o (xbar_mem_obi_rsp.rvalid),
     .obi_rready_i (xbar_mem_obi_req.rready),
     .obi_rdata_o  (xbar_mem_obi_rsp.r.rdata)
+  );
+
+  dmi_jtag #(
+    .IdcodeValue(Rvj1JtagIdCode)
+  ) dmi_jtag_inst (
+    .clk_i  (clk),
+    .rst_ni (rstn),
+    .testmode_i (1'b0),
+
+    .dmi_rst_no      (dmi_rst_n),
+    .dmi_req_o       (dmi_req),
+    .dmi_req_valid_o (dmi_req_valid),
+    .dmi_req_ready_i (dmi_req_ready),
+
+    .dmi_resp_i      (dmi_resp),
+    .dmi_resp_ready_o(dmi_resp_ready),
+    .dmi_resp_valid_i(dmi_resp_valid),
+
+    .tck_i           (jtag_tck_i),
+    .td_i            (jtag_tdi_i),
+    .td_o            (jtag_tdo_o),
+    .tms_i           (jtag_tms_i),
+    .trst_ni         (jtag_trst_ni),
+    .tdo_oe_o        ()
+  );
+
+  dm_obi_top #(
+    .BusWidth (DataWidth),
+    .IdWidth  (IdLen)
+  ) dm_obi_top_inst (
+    .clk_i       (clk),
+    .rst_ni      (rstn),
+    .testmode_i  (1'b0),
+    .ndmreset_o  (),
+    .dmactive_o  (),
+
+    .debug_req_o   (debug_req),
+    .unavailable_i (1'b0),
+    .hartinfo_i    (hartinfo),
+
+    .slave_req_i       (xbar_mem_obi_req.req),
+    .slave_we_i        (xbar_mem_obi_req.a.we),
+    .slave_addr_i      (xbar_mem_obi_req.a.addr),
+    .slave_be_i        (xbar_mem_obi_req.a.be),
+    .slave_wdata_i     (xbar_mem_obi_req.a.wdata),
+    .slave_aid_i       (xbar_mem_obi_req.a.aid),
+    .slave_gnt_o       (xbar_mem_obi_rsp.gnt),
+    .slave_rvalid_o    (xbar_mem_obi_rsp.rvalid),
+    .slave_rdata_o     (xbar_mem_obi_rsp.r.rdata),
+    .slave_rid_o       (xbar_mem_obi_rsp.r.rid),
+
+    .master_req_o      (dbg_obi_man_req.req),
+    .master_addr_o     (dbg_obi_man_req.a.addr),
+    .master_we_o       (dbg_obi_man_req.a.we),
+    .master_be_o       (dbg_obi_man_req.a.be),
+    .master_wdata_o    (dbg_obi_man_req.a.wdata),
+    .master_gnt_i      (dbg_obi_man_rsp.gnt),
+    .master_rvalid_i   (dbg_obi_man_rsp.rvalid),
+    .master_rdata_i    (dbg_obi_man_rsp.r.rdata),
+    .master_err_i      (dbg_obi_man_rsp.r.err),
+    .master_other_err_i(1'b0),
+
+    .dmi_rst_ni        (dmi_rst_n),
+    .dmi_req_valid_i   (dmi_req_valid),
+    .dmi_req_ready_o   (dmi_req_ready),
+    .dmi_req_i         (dmi_req),
+
+    .dmi_resp_valid_o  (dmi_resp_valid),
+    .dmi_resp_ready_i  (dmi_resp_ready),
+    .dmi_resp_o        (dmi_resp)
   );
 
   obi_uart #(

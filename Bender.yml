@@ -4,15 +4,18 @@ package:
     - "Jure Vreča <jure.vreca@ijs.si>"
 
 dependencies:
-  rvj1:            { git: "https://github.com/jurevreca12/rvj1.git",          rev: 355645b   }
-  obi:             { git: "https://github.com/pulp-platform/obi.git",         version: 0.1.7 }
-  obi_peripherals: { git: "https://github.com/jurevreca12/obi_peripherals",   rev: 1654d70e  }
+  std-lib:         { git: "https://github.com/jurevreca12/std-lib.git",         rev: b18287e   }
+  rvj1:            { git: "https://github.com/jurevreca12/rvj1.git",            rev: f0f0b00   }
+  obi:             { git: "https://github.com/pulp-platform/obi.git",           version: 0.1.7 }
+  obi_peripherals: { git: "https://github.com/jurevreca12/obi_peripherals.git", rev: 1654d70   }
+  riscv-dbg:       { git: "https://github.com/pulp-platform/riscv-dbg.git",     rev: 1cd764a   }
 
 sources:
     - rtl/mcu_soc_pkg.sv
     - rtl/obi_ram.sv
     - rtl/mcu_soc.sv
     - tb/mcu_soc_tb.sv
+    - tb/mcu_soc_jtag_tb.sv
 
     - target: xilinx
       files:

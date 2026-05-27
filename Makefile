@@ -16,6 +16,9 @@ VERILATOR_ARGS += -GINIT_FILE=\"/foss/designs/mcu-soc//sw/bin/hello_word.hex\"
 MAKEFILE_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 SW_HEX_FILE := $(MAKEFILE_DIR)/sw/bin/hello_word.hex
 
+RV_DBG_PATH := $(shell bender path riscv-dbg)
+REMOTE_BITBANG_PATH := $(RV_DBG_PATH)/tb/remote_bitbang/
+
 mcu_soc.f:
 	$(BENDER) script verilator -t rtl &> mcu_soc.f
 
@@ -27,6 +30,17 @@ obj_dir/Vmcu_soc_tb: mcu_soc.f $(SW_HEX_FILE)
  
 dump.fst: obj_dir/Vmcu_soc_tb
 	./obj_dir/Vmcu_soc_tb
+
+obj_dir/Vmcu_soc_jtag_tb: mcu_soc.f
+	$(VERILATOR) $(VERILATOR_ARGS) \
+		--top mcu_soc_jtag_tb \
+		-f mcu_soc.f \
+		-LDFLAGS "-L$(REMOTE_BITBANG_PATH) \
+		-Wl,--enable-new-dtags -Wl,-rpath,remote_bitbang -lrbs" \
+		$(RV_DBG_PATH)/tb/SimJTAG.sv 
+
+dump_debug.fst: obj_dir/Vmcu_soc_jtag_tb
+	LD_LIBRARY_PATH=$(LD_LIBRARY_PATH):$(REMOTE_BITBANG_PATH) ./tb/test_debug.py -s ./tb/rvj1_compliance_test.cfg
 
 sim: dump.fst
 
