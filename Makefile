@@ -40,7 +40,7 @@ obj_dir/Vmcu_soc_jtag_tb: mcu_soc.f
 		$(RV_DBG_PATH)/tb/SimJTAG.sv 
 
 dump_debug.fst: obj_dir/Vmcu_soc_jtag_tb
-	LD_LIBRARY_PATH=$(LD_LIBRARY_PATH):$(REMOTE_BITBANG_PATH) ./tb/test_debug.py -s ./tb/rvj1_compliance_test.cfg
+	LD_LIBRARY_PATH=$(LD_LIBRARY_PATH):$(REMOTE_BITBANG_PATH) ./tb/test_debug.py -s ./tb/rvj1_compliance_test.cfg &> dump_debug.log
 
 sim: dump.fst
 

@@ -30,33 +30,33 @@ module mcu_soc import mcu_soc_pkg::*; #(
   };
   dm::hartinfo_t hartinfo = HartInfo;
 
-  logic [IdLen-1:0]     obi_instr_aid;
-  logic                 obi_instr_areq;
-  logic                 obi_instr_agnt;
-  logic [AddrWidth-1:0] obi_instr_aaddr;
-  logic                 obi_instr_awe;
-  logic [NBytes-1:0]    obi_instr_abe;
-  logic [DataWidth-1:0] obi_instr_awdata;
+  logic [MgrObiCfg.IdWidth-1:0] obi_instr_aid;
+  logic                         obi_instr_areq;
+  logic                         obi_instr_agnt;
+  logic [AddrWidth-1:0]         obi_instr_aaddr;
+  logic                         obi_instr_awe;
+  logic [NBytes-1:0]            obi_instr_abe;
+  logic [DataWidth-1:0]         obi_instr_awdata;
 
-  logic [IdLen-1:0]     obi_instr_rid;
-  logic                 obi_instr_rvalid;
-  logic                 obi_instr_rready;
-  logic [DataWidth-1:0] obi_instr_rdata;
-  logic                 obi_instr_rerr;
+  logic [MgrObiCfg.IdWidth-1:0] obi_instr_rid;
+  logic                         obi_instr_rvalid;
+  logic                         obi_instr_rready;
+  logic [DataWidth-1:0]         obi_instr_rdata;
+  logic                         obi_instr_rerr;
 
-  logic [IdLen-1:0]     obi_data_aid;
-  logic                 obi_data_areq;
-  logic                 obi_data_agnt;
-  logic [AddrWidth-1:0] obi_data_aaddr;
-  logic                 obi_data_awe;
-  logic [NBytes-1:0]    obi_data_abe;
-  logic [DataWidth-1:0] obi_data_awdata;
+  logic [MgrObiCfg.IdWidth-1:0] obi_data_aid;
+  logic                         obi_data_areq;
+  logic                         obi_data_agnt;
+  logic [AddrWidth-1:0]         obi_data_aaddr;
+  logic                         obi_data_awe;
+  logic [NBytes-1:0]            obi_data_abe;
+  logic [DataWidth-1:0]         obi_data_awdata;
 
-  logic [IdLen-1:0]     obi_data_rid;
-  logic                 obi_data_rvalid;
-  logic                 obi_data_rready;
-  logic [DataWidth-1:0] obi_data_rdata;
-  logic                 obi_data_rerr;
+  logic [MgrObiCfg.IdWidth-1:0] obi_data_rid;
+  logic                         obi_data_rvalid;
+  logic                         obi_data_rready;
+  logic [DataWidth-1:0]         obi_data_rdata;
+  logic                         obi_data_rerr;
 
   logic                 debug_req;
   logic                 dmi_rst_n;
@@ -67,18 +67,19 @@ module mcu_soc import mcu_soc_pkg::*; #(
   logic                 dmi_resp_ready;
   dm::dmi_resp_t        dmi_resp;
 
-  obi_req_t             core_instr_obi_req;
-  obi_rsp_t             core_instr_obi_rsp;
-  obi_req_t             core_data_obi_req;
-  obi_rsp_t             core_data_obi_rsp;
-  obi_req_t             dbg_obi_man_req;
-  obi_rsp_t             dbg_obi_man_rsp;
-  obi_req_t             xbar_obi_sub_req;
-  obi_rsp_t             xbar_obi_sub_rsp;
-  obi_req_t             xbar_mem_obi_req;
-  obi_rsp_t             xbar_mem_obi_rsp;
-  obi_req_t             xbar_uart_obi_req;
-  obi_rsp_t             xbar_uart_obi_rsp;
+  mgr_obi_req_t             core_instr_obi_req;
+  mgr_obi_rsp_t             core_instr_obi_rsp;
+  mgr_obi_req_t             core_data_obi_req;
+  mgr_obi_rsp_t             core_data_obi_rsp;
+  mgr_obi_req_t             dbg_obi_man_req;
+  mgr_obi_rsp_t             dbg_obi_man_rsp;
+  
+  sbr_obi_req_t             xbar_obi_sub_req;
+  sbr_obi_rsp_t             xbar_obi_sub_rsp;
+  sbr_obi_req_t             xbar_mem_obi_req;
+  sbr_obi_rsp_t             xbar_mem_obi_rsp;
+  sbr_obi_req_t             xbar_uart_obi_req;
+  sbr_obi_rsp_t             xbar_uart_obi_rsp;
   
 
   rvj1_obi #(
@@ -159,20 +160,20 @@ module mcu_soc import mcu_soc_pkg::*; #(
   assign obi_data_rerr   = core_data_obi_rsp.r.err;
 
   obi_xbar #(
-    .SbrPortObiCfg      (ObiCfg),
-    .MgrPortObiCfg      (ObiCfg),
-    .sbr_port_obi_req_t (obi_req_t),
-    .sbr_port_a_chan_t  (obi_a_chan_t),
-    .sbr_port_obi_rsp_t (obi_rsp_t),
-    .sbr_port_r_chan_t  (obi_r_chan_t),
-    .mgr_port_obi_req_t (obi_req_t),
-    .mgr_port_obi_rsp_t (obi_rsp_t),
+    .SbrPortObiCfg      (MgrObiCfg),
+    .MgrPortObiCfg      (SbrObiCfg),
+    .sbr_port_obi_req_t (mgr_obi_req_t),
+    .sbr_port_a_chan_t  (mgr_obi_a_chan_t),
+    .sbr_port_obi_rsp_t (mgr_obi_rsp_t),
+    .sbr_port_r_chan_t  (mgr_obi_r_chan_t),
+    .mgr_port_obi_req_t (sbr_obi_req_t),
+    .mgr_port_obi_rsp_t (sbr_obi_rsp_t),
     .NumSbrPorts        (NumManagers),
     .NumMgrPorts        (NumSubordinates),
     .NumMaxTrans        (4),
     .NumAddrRules       (NumSubordinates),
     .addr_map_rule_t    (addr_map_rule_t),
-    .UseIdForRouting    (1'b0),
+    .UseIdForRouting    (1'b1),
     .Connectivity       ('1)
   ) xbar (
     .clk_i            (clk),
@@ -195,7 +196,7 @@ module mcu_soc import mcu_soc_pkg::*; #(
     .INIT_FILE     (INIT_FILE),
     .INIT_FILE_BIN (INIT_FILE_BIN),
     .MEM_SIZE_WORDS(MEM_SIZE_WORDS),
-    .IDLEN         (IdLen)
+    .IDLEN         (SbrObiCfg.IdWidth)
   ) mem (
     .clk_i  (clk),
     .rstn_i (rstn),
@@ -240,7 +241,7 @@ module mcu_soc import mcu_soc_pkg::*; #(
 
   dm_obi_top #(
     .BusWidth (DataWidth),
-    .IdWidth  (IdLen)
+    .IdWidth  (SbrObiCfg.IdWidth)
   ) dm_obi_top_inst (
     .clk_i       (clk),
     .rst_ni      (rstn),
@@ -252,16 +253,16 @@ module mcu_soc import mcu_soc_pkg::*; #(
     .unavailable_i (1'b0),
     .hartinfo_i    (hartinfo),
 
-    .slave_req_i       (xbar_mem_obi_req.req),
-    .slave_we_i        (xbar_mem_obi_req.a.we),
-    .slave_addr_i      (xbar_mem_obi_req.a.addr),
-    .slave_be_i        (xbar_mem_obi_req.a.be),
-    .slave_wdata_i     (xbar_mem_obi_req.a.wdata),
-    .slave_aid_i       (xbar_mem_obi_req.a.aid),
-    .slave_gnt_o       (xbar_mem_obi_rsp.gnt),
-    .slave_rvalid_o    (xbar_mem_obi_rsp.rvalid),
-    .slave_rdata_o     (xbar_mem_obi_rsp.r.rdata),
-    .slave_rid_o       (xbar_mem_obi_rsp.r.rid),
+    .slave_req_i       (xbar_obi_sub_req.req),
+    .slave_we_i        (xbar_obi_sub_req.a.we),
+    .slave_addr_i      (xbar_obi_sub_req.a.addr),
+    .slave_be_i        (xbar_obi_sub_req.a.be),
+    .slave_wdata_i     (xbar_obi_sub_req.a.wdata),
+    .slave_aid_i       (xbar_obi_sub_req.a.aid),
+    .slave_gnt_o       (xbar_obi_sub_rsp.gnt),
+    .slave_rvalid_o    (xbar_obi_sub_rsp.rvalid),
+    .slave_rdata_o     (xbar_obi_sub_rsp.r.rdata),
+    .slave_rid_o       (xbar_obi_sub_rsp.r.rid),
 
     .master_req_o      (dbg_obi_man_req.req),
     .master_addr_o     (dbg_obi_man_req.a.addr),
@@ -285,9 +286,9 @@ module mcu_soc import mcu_soc_pkg::*; #(
   );
 
   obi_uart #(
-    .ObiCfg   (ObiCfg),
-    .obi_req_t(obi_req_t),
-    .obi_rsp_t(obi_rsp_t)
+    .ObiCfg   (SbrObiCfg),
+    .obi_req_t(sbr_obi_req_t),
+    .obi_rsp_t(sbr_obi_rsp_t)
   ) uart (
     .clk_i  (clk),
     .rst_ni (rstn),
