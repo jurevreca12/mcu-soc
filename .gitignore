@@ -4,3 +4,4 @@ mcu_soc.f
 Bender.lock
 dump.fst
 obj_dir/
+dump_debug.fst

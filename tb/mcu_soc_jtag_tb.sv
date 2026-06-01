@@ -2,7 +2,7 @@ module mcu_soc_jtag_tb #(
   parameter string       INIT_FILE="",
   parameter int unsigned INIT_FILE_BIN=0,
   parameter int unsigned MEM_SIZE_WORDS=4096,
-  parameter int unsigned TIMEOUT=100000,
+  parameter int unsigned TIMEOUT=2000000,
   parameter int unsigned OPENOCD_PORT=9999
 ) ();
 
@@ -69,6 +69,7 @@ module mcu_soc_jtag_tb #(
   repeat (3) @ (posedge clk);
   rstn = 1'b1;
   repeat (TIMEOUT) @ (posedge clk);
+  $display("SIMULATION TIMED OUT!");
   $finish;
   end
 

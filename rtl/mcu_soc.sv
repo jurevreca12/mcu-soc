@@ -15,7 +15,6 @@ module mcu_soc import mcu_soc_pkg::*; #(
   output logic tx,
   input  logic rx
 );
-  localparam int IdLen = 4;
   localparam int AddrWidth = 32;
   localparam int DataWidth = 32;
   localparam int NBytes = (DataWidth / 8);
@@ -67,19 +66,19 @@ module mcu_soc import mcu_soc_pkg::*; #(
   logic                 dmi_resp_ready;
   dm::dmi_resp_t        dmi_resp;
 
-  mgr_obi_req_t             core_instr_obi_req;
-  mgr_obi_rsp_t             core_instr_obi_rsp;
-  mgr_obi_req_t             core_data_obi_req;
-  mgr_obi_rsp_t             core_data_obi_rsp;
-  mgr_obi_req_t             dbg_obi_man_req;
-  mgr_obi_rsp_t             dbg_obi_man_rsp;
+  mgr_obi_req_t         core_instr_obi_req;
+  mgr_obi_rsp_t         core_instr_obi_rsp;
+  mgr_obi_req_t         core_data_obi_req;
+  mgr_obi_rsp_t         core_data_obi_rsp;
+  mgr_obi_req_t         dbg_obi_man_req;
+  mgr_obi_rsp_t         dbg_obi_man_rsp;
   
-  sbr_obi_req_t             xbar_obi_sub_req;
-  sbr_obi_rsp_t             xbar_obi_sub_rsp;
-  sbr_obi_req_t             xbar_mem_obi_req;
-  sbr_obi_rsp_t             xbar_mem_obi_rsp;
-  sbr_obi_req_t             xbar_uart_obi_req;
-  sbr_obi_rsp_t             xbar_uart_obi_rsp;
+  sbr_obi_req_t         xbar_obi_sub_req;
+  sbr_obi_rsp_t         xbar_obi_sub_rsp;
+  sbr_obi_req_t         xbar_mem_obi_req;
+  sbr_obi_rsp_t         xbar_mem_obi_rsp;
+  sbr_obi_req_t         xbar_uart_obi_req;
+  sbr_obi_rsp_t         xbar_uart_obi_rsp;
   
 
   rvj1_obi #(
@@ -240,6 +239,7 @@ module mcu_soc import mcu_soc_pkg::*; #(
   );
 
   dm_obi_top #(
+    .NrHarts  (1),
     .BusWidth (DataWidth),
     .IdWidth  (SbrObiCfg.IdWidth)
   ) dm_obi_top_inst (
