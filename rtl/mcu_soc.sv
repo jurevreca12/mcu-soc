@@ -10,7 +10,7 @@ module mcu_soc import mcu_soc_pkg::*; #(
   input  logic jtag_tdi_i,
   output logic jtag_tdo_o,
   input  logic jtag_tms_i,
-  input  logic jtag_trst_ni,
+  input  logic jtag_trstn_i,
 
   output logic tx,
   input  logic rx
@@ -234,7 +234,7 @@ module mcu_soc import mcu_soc_pkg::*; #(
     .td_i            (jtag_tdi_i),
     .td_o            (jtag_tdo_o),
     .tms_i           (jtag_tms_i),
-    .trst_ni         (jtag_trst_ni),
+    .trst_ni         (jtag_trstn_i),
     .tdo_oe_o        ()
   );
 

@@ -6,8 +6,9 @@ CUID := $(shell id -u)
 CGID := $(shell id -g)
 CWD  := $(abspath $(dir $$PWD))
 
-BENDER    ?= bender
-VERILATOR ?= verilator
+BENDER     ?= bender
+VERILATOR  ?= verilator
+DOCKER_ADD_XILINX_PATH := $(if $(XILINX_DIR),-v $(XILINX_DIR):$(XILINX_DIR),)
 
 VERILATOR_ARGS  = --timescale 1ns/1ps --binary -Wno-fatal -Wno-style
 VERILATOR_ARGS += --trace-fst --trace-structs --trace-params -DRVFI
@@ -65,4 +66,4 @@ docker-run-it:
                -v /etc/shadow:/etc/shadow:ro \
 			   -v ~/.cache/:/headless/.cache:rw \
 			   -v $(CWD):/foss/designs/mcu-soc \
-			    iic-osic-tools-plus:0.1 -s /bin/bash
+				$(DOCKER_ADD_XILINX_PATH) iic-osic-tools-plus:0.1 -s /bin/bash

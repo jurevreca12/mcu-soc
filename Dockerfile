@@ -56,4 +56,9 @@ RUN git clone https://github.com/riscv-collab/riscv-openocd --recurse-submodules
     rm -rf riscv-openocd && \
     ln -s /foss/tools/riscv-openocd/bin/openocd /foss/tools/bin/openocd
 
+RUN apt update && \
+    wget http://security.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.3-2ubuntu0.1_amd64.deb && \
+    sudo apt install ./libtinfo5_6.3-2ubuntu0.1_amd64.deb && \
+    rm ./libtinfo5_6.3-2ubuntu0.1_amd64.deb
+
 WORKDIR /foss/designs/mcu-soc
