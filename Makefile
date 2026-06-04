@@ -58,6 +58,7 @@ docker-build:
 
 docker-run-it:
 	docker run -it \
+			   --network host \
 			   --user ${CUID}:${CGID} \
 			   -e "UID=${CUID}" \
 			   -e "GID=${CGID}" \
