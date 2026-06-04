@@ -14,8 +14,8 @@
 #define UART_BASE_ADDR      0x60000000
 
 // Frequencies
-#define TB_FREQUENCY        100000000
-#define TB_BAUDRATE         115200
+#define TB_FREQUENCY        50000000
+#define TB_BAUDRATE         9600
 
 // Peripheral configs
 // UART
