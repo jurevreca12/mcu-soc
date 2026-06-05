@@ -58,6 +58,9 @@ module mcu_soc import mcu_soc_pkg::*; #(
   logic                         obi_data_rerr;
 
   logic                 debug_req;
+  logic                 ndmreset;
+  logic                 hwsw_rstn;
+
   logic                 dmi_rst_n;
   logic                 dmi_req_valid;
   logic                 dmi_req_ready;
@@ -79,7 +82,9 @@ module mcu_soc import mcu_soc_pkg::*; #(
   sbr_obi_rsp_t         xbar_mem_obi_rsp;
   sbr_obi_req_t         xbar_uart_obi_req;
   sbr_obi_rsp_t         xbar_uart_obi_rsp;
-  
+
+
+  assign hwsw_rstn = rstn && ~ndmreset;
 
   rvj1_obi #(
     .BootAddr (McuBootAddr),
@@ -90,7 +95,7 @@ module mcu_soc import mcu_soc_pkg::*; #(
     .MHartId  (McuMHartId)
   ) rvj1_inst (
     .clk_i          (clk),
-    .rstn_i         (rstn),
+    .rstn_i         (hwsw_rstn),
 
     .instr_aid_o    (obi_instr_aid),
     .instr_areq_o   (obi_instr_areq),
@@ -176,7 +181,7 @@ module mcu_soc import mcu_soc_pkg::*; #(
     .Connectivity       ('1)
   ) xbar (
     .clk_i            (clk),
-    .rst_ni           (rstn),
+    .rst_ni           (hwsw_rstn),
 
     .testmode_i       (1'b0),
 
@@ -198,7 +203,7 @@ module mcu_soc import mcu_soc_pkg::*; #(
     .IDLEN         (SbrObiCfg.IdWidth)
   ) mem (
     .clk_i  (clk),
-    .rstn_i (rstn),
+    .rstn_i (hwsw_rstn),
 
     .obi_aid_i    (xbar_mem_obi_req.a.aid),
     .obi_areq_i   (xbar_mem_obi_req.req),
@@ -246,7 +251,7 @@ module mcu_soc import mcu_soc_pkg::*; #(
     .clk_i       (clk),
     .rst_ni      (rstn),
     .testmode_i  (1'b0),
-    .ndmreset_o  (),
+    .ndmreset_o  (ndmreset),
     .dmactive_o  (),
 
     .debug_req_o   (debug_req),
@@ -291,7 +296,7 @@ module mcu_soc import mcu_soc_pkg::*; #(
     .obi_rsp_t(sbr_obi_rsp_t)
   ) uart (
     .clk_i  (clk),
-    .rst_ni (rstn),
+    .rst_ni (hwsw_rstn),
 
     .obi_req_i (xbar_uart_obi_req),
     .obi_rsp_o (xbar_uart_obi_rsp),
