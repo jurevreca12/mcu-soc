@@ -3,7 +3,8 @@ module mcu_soc_jtag_tb #(
   parameter int unsigned INIT_FILE_BIN=0,
   parameter int unsigned MEM_SIZE_WORDS=4096,
   parameter int unsigned TIMEOUT=2000000,
-  parameter int unsigned OPENOCD_PORT=9999
+  parameter int unsigned OPENOCD_PORT=9999,
+  parameter string       DUMP_FILE="dump_debug.fst"
 ) ();
 
   logic clk, rstn, tx, rx;
@@ -27,7 +28,7 @@ module mcu_soc_jtag_tb #(
     .jtag_tdi_i  (sim_jtag_tdi),
     .jtag_tdo_o  (sim_jtag_tdo),
     .jtag_tms_i  (sim_jtag_tms),
-    .jtag_trst_ni(sim_jtag_trstn),
+    .jtag_trstn_i(sim_jtag_trstn),
 
     .tx          (tx),
     .rx          (rx)
@@ -55,14 +56,14 @@ module mcu_soc_jtag_tb #(
   always_comb begin: jtag_exit_handler
     if (sim_jtag_exit) begin
       $display("SimJTAG requested exit. Ending simulation.");
-      $finish(2);
+      $finish(20);
     end
   end
 
   initial begin
   $display("Starting simulation of MCU with JTAG and debug module.");
   $display("Initialiting memory with: %s", INIT_FILE);
-  $dumpfile("dump_debug.fst");
+  $dumpfile(DUMP_FILE);
   $dumpvars();
   clk = 1'b0;
   rstn = 1'b0;
@@ -70,7 +71,7 @@ module mcu_soc_jtag_tb #(
   rstn = 1'b1;
   repeat (TIMEOUT) @ (posedge clk);
   $display("SIMULATION TIMED OUT!");
-  $finish;
+  $finish(20);
   end
 
 endmodule

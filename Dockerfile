@@ -43,13 +43,13 @@ RUN git clone https://github.com/YosysHQ/riscv-formal && \
     sed -i "s/with\sopen(f\"\.\.\/\.\./with open(f\"\/foss\/tools\/riscv-formal/" \
         /foss/tools/riscv-formal/checks/genchecks.py
 
-RUN git clone https://github.com/riscv-collab/riscv-openocd --recurse-submodules && \
+RUN git clone https://github.com/riscv/riscv-openocd.git && \
     cd riscv-openocd && \
-    git checkout eb01c63 && \
-    git submodule update && \
-    mkdir /foss/tools/riscv-openocd/ && \
+    git checkout af3a034b57279d2a400d87e7508c9a92254ec165 && \
+    git submodule update --init --recursive && \
+    sed -i 's/const struct swd_driver bitbang_swd/extern const struct swd_driver bitbang_swd/g' ./src/jtag/drivers/bitbang.h && \
     ./bootstrap && \
-    ./configure --prefix=/foss/tools/riscv-openocd/ --enable-internal-jimtcl && \
+    ./configure --prefix=/foss/tools/riscv-openocd/ --enable-internal-jimtcl --disable-werror --disable-wextra --enable-remote-bitbang && \
     make && \
     make install && \
     cd .. && \

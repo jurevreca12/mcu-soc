@@ -41,7 +41,7 @@ obj_dir/Vmcu_soc_jtag_tb: mcu_soc.f
 		$(RV_DBG_PATH)/tb/SimJTAG.sv 
 
 dump_debug.fst: obj_dir/Vmcu_soc_jtag_tb
-	./tb/debug.sh
+	./tb/debug.sh tb/rvj1_compliance_test.cfg
 
 sim: dump.fst
 
