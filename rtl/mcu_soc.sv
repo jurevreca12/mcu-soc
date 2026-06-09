@@ -395,7 +395,8 @@ obi_rom obi_rom_inst (
 
   .obi_rvalid_o (obi_r_chans_sub[XbarSbrBoot].obi_rvalid),
   .obi_rready_i (obi_rready_signals_sub[XbarSbrBoot]),
-  .obi_rdata_o  (obi_r_chans_sub[XbarSbrBoot].obi_rdata)  
+  .obi_rdata_o  (obi_r_chans_sub[XbarSbrBoot].obi_rdata),
+  .obi_err_o    (obi_r_chans_sub[XbarSbrBoot].obi_rerr)
 );
 
 endmodule

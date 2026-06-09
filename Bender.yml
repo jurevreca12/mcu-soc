@@ -4,15 +4,15 @@ package:
     - "Jure Vreča <jure.vreca@ijs.si>"
 
 dependencies:
-  std-lib:         { git: "https://github.com/jurevreca12/std-lib.git",         rev: f427415   }
+  std-lib:         { git: "https://github.com/jurevreca12/std-lib.git",         rev: fdde208   }
   rvj1:            { git: "https://github.com/jurevreca12/rvj1.git",            rev: 75da4ea   }
   obi:             { git: "https://github.com/Kristjan42/obi.git",              rev: 7c895da   }
   riscv-dbg:       { git: "https://github.com/pulp-platform/riscv-dbg.git",     rev: 1cd764a   }
   obi_gpio:        { git: "https://github.com/RatkoFri/obi_gpio.git",           rev: bdd78b5   }
   obi_timer:       { git: "https://github.com/RatkoFri/obi_timer.git",          rev: 7fbe1b4   }
   obi_uart:        { git: "https://github.com/RatkoFri/obi_uart.git",           rev: 8c13903   }
-  obi-spi:         { git: "https://github.com/carotium/obi-spi.git",            rev: 98ddb8d   }
-  obi-rom:         { git: "https://github.com/jurevreca12/boot-rom.git",        rev: 76b2586   }
+  obi-spi:         { git: "https://github.com/carotium/obi-spi.git",            rev: 30b3901   }
+  obi-rom:         { git: "https://github.com/jurevreca12/boot-rom.git",        rev: f375aa0   }
 
 sources:
     - rtl/mcu_soc_pkg.sv

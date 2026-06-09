@@ -11,7 +11,7 @@ module mcu_soc_tb #(
   logic clk, rstn, tx;
   logic [GPIO_NUM_OUT-1:0] gpio_out;
   logic [SPI_NUM_SLAVES-1:0] spi_ss_o;
-  logic spi_sclk_o, spi_mosi_o;
+  logic spi_sclk_o, spi_mosi_o, spi_miso_i;
 
   always #5 clk = ~clk;
 
@@ -35,7 +35,7 @@ module mcu_soc_tb #(
     .spi_ss_o     (spi_ss_o),
     .spi_sclk_o   (spi_sclk_o),
     .spi_mosi_o   (spi_mosi_o),
-    .spi_miso_i   (1'b0)
+    .spi_miso_i   (spi_miso_i)
   );
 
   initial begin
