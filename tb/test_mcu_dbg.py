@@ -5,7 +5,7 @@ import subprocess
 from forastero.io import IORole, io_suffix_style
 from forastero.driver import DriverEvent
 from forastero import BaseBench
-from cocotb.triggers import ClockCycles, Timer, Join
+from cocotb.triggers import ClockCycles, Timer, Join, Event
 from base import get_test_runner, WAVES
 from openocd import Client
 from random import Random
@@ -17,6 +17,7 @@ from subprocess import Popen, PIPE, STDOUT, DEVNULL
 import shlex
 from queue import Queue, Empty
 from threading import Thread
+
 
 TIMEOUT = 150000
 
@@ -51,7 +52,7 @@ async def start_openocd(dut):
         stdin=DEVNULL, stdout=PIPE, stderr=STDOUT, text=True
     )
     output_queue = Queue()
-    Thread(
+    t=Thread(
         target=stdout_reader,
         args=(proc, output_queue),
         daemon=True,
@@ -79,8 +80,15 @@ async def start_openocd(dut):
         dut._log.info(
             f"OpenOCD exited with code {proc.returncode}"
         )
-
     return 0
+
+
+def openocd_cmdloop(oocd, cmd_queue):
+    print("A4")
+    while True:
+        item = cmd_queue.get(block=True)
+        print(f"Running command: {item['cmd']} with args: {item['args']}.")
+        getattr(oocd, item['cmd'])(*item['args'])
 
 
 @McuDbgTB.testcase(reset_wait_during=2, reset_wait_after=0, timeout=TIMEOUT, shutdown_delay=1, shutdown_loops=1)
@@ -89,15 +97,21 @@ async def halt_at_reset(tb:McuDbgTB, log):
     flash_data = get_flash_data("/foss/designs/mcu-soc/sw/bin/gpio.hex")
     tb.flash_mem.flash(flash_data)
     log.info(f"Launching OpenOCD!")
-    log.info(f"OPENOCD_SCRIPT={OPENOCD_SCRIPT}")
-    log.info(f"exists={os.path.exists(OPENOCD_SCRIPT)}")
     task = cocotb.start_soon(start_openocd(tb.dut))
     await Join(task)
+
     print("A")
     with Client() as oocd:
-        oocd._socket.setblocking(False)
+        print("A1")
+        cmd_queue = Queue()
+        t=Thread(
+            target=openocd_cmdloop,
+            args=(oocd, cmd_queue),
+            daemon=True,
+        ).start()
         print("B")
-        oocd.halt()
+        cmd_queue.put({'cmd': 'halt', 'args': []})
+        #oocd.halt()
         print("C")
         registers = oocd.read_registers(['pc', 'sp'])
         print("D")
