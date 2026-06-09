@@ -12,7 +12,7 @@ dependencies:
   obi_timer:       { git: "https://github.com/RatkoFri/obi_timer.git",          rev: 7fbe1b4   }
   obi_uart:        { git: "https://github.com/RatkoFri/obi_uart.git",           rev: 8c13903   }
   obi-spi:         { git: "https://github.com/carotium/obi-spi.git",            rev: 30b3901   }
-  obi-rom:         { git: "https://github.com/jurevreca12/boot-rom.git",        rev: f375aa0   }
+  obi-rom:         { git: "https://github.com/jurevreca12/boot-rom.git",        rev: 413aa2f   }
 
 sources:
     - rtl/mcu_soc_pkg.sv
