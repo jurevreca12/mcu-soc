@@ -3,11 +3,17 @@ module mcu_soc_jtag_tb #(
   parameter int unsigned INIT_FILE_BIN=0,
   parameter int unsigned MEM_SIZE_WORDS=4096,
   parameter int unsigned TIMEOUT=2000000,
+  parameter int unsigned GPIO_NUM_IN=4,
+  parameter int unsigned GPIO_NUM_OUT=4,
+  parameter int unsigned SPI_NUM_SLAVES = 1,
   parameter int unsigned OPENOCD_PORT=9999,
   parameter string       DUMP_FILE="dump_debug.fst"
 ) ();
 
   logic clk, rstn, tx;
+  logic [GPIO_NUM_OUT-1:0] gpio_out;
+  logic [SPI_NUM_SLAVES-1:0] spi_ss_o;
+  logic spi_sclk_o, spi_mosi_o, spi_miso_i;
   logic sim_jtag_tck;
   logic sim_jtag_tms;
   logic sim_jtag_tdi;
@@ -19,7 +25,10 @@ module mcu_soc_jtag_tb #(
   mcu_soc #(
     .INIT_FILE      (INIT_FILE),
     .INIT_FILE_BIN  (INIT_FILE_BIN),
-    .MEM_SIZE_WORDS (MEM_SIZE_WORDS)
+    .MEM_SIZE_WORDS (MEM_SIZE_WORDS),
+    .GPIO_NUM_IN    (GPIO_NUM_IN),
+    .GPIO_NUM_OUT   (GPIO_NUM_OUT),
+    .SPI_NUM_SLAVES (SPI_NUM_SLAVES)
   ) mcux (
     .clk         (clk),
     .rstn        (rstn),
@@ -29,10 +38,14 @@ module mcu_soc_jtag_tb #(
     .jtag_tdo_o  (sim_jtag_tdo),
     .jtag_tms_i  (sim_jtag_tms),
     .jtag_trstn_i(sim_jtag_trstn),
-
-    .tx          (tx)
+    .tx          (tx),
+    .gpio_in_i   (4'b0000),
+    .gpio_out_o  (gpio_out),
+    .spi_ss_o    (spi_ss_o),
+    .spi_sclk_o  (spi_sclk_o),
+    .spi_mosi_o  (spi_mosi_o),
+    .spi_miso_i  (spi_miso_i)
   );
-  assign rx = 1'b0;
 
   SimJTAG #(
     .TICK_DELAY(5),

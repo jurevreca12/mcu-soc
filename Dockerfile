@@ -61,4 +61,6 @@ RUN apt update && \
     sudo apt install ./libtinfo5_6.3-2ubuntu0.1_amd64.deb && \
     rm ./libtinfo5_6.3-2ubuntu0.1_amd64.deb
 
+RUN pip install git+https://gitlab.zapb.de/openocd/python-openocd@dcf8c2b
+
 WORKDIR /foss/designs/mcu-soc

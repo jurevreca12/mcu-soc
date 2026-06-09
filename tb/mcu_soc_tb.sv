@@ -20,7 +20,8 @@ module mcu_soc_tb #(
     .INIT_FILE_BIN  (INIT_FILE_BIN),
     .MEM_SIZE_WORDS (MEM_SIZE_WORDS),
     .GPIO_NUM_IN    (GPIO_NUM_IN),
-    .GPIO_NUM_OUT   (GPIO_NUM_OUT)
+    .GPIO_NUM_OUT   (GPIO_NUM_OUT),
+    .SPI_NUM_SLAVES (SPI_NUM_SLAVES)
   ) mcux (
     .clk          (clk),
     .rstn         (rstn),
