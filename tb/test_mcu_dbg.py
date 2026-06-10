@@ -17,6 +17,7 @@ from subprocess import Popen, PIPE, STDOUT, DEVNULL
 import shlex
 from queue import Queue, Empty
 from threading import Thread
+from multiprocessing import Process
 
 
 TIMEOUT = 150000
@@ -28,9 +29,9 @@ class McuDbgTB(BaseBench):
     def __init__(self, dut):
         super().__init__(dut, clk=dut.clk, rst=dut.rstn, rst_active_high=False)
         spi_io = SpiIO(dut, "spi", IORole.INITIATOR, io_style=io_suffix_style)
-        self.register("spi_monitor", SpiMonitor(self, spi_io, self.clk, self.rst))
-        self.register("spi_ss_mon", SpiSSMonitor(self, spi_io, self.clk, self.rst))
-        self.register("spi_miso_drv", SpiMisoDriver(self, spi_io, self.clk, self.rst))
+        self.register("spi_monitor", SpiMonitor(self, spi_io, self.clk, self.rst), scoreboard=False)
+        self.register("spi_ss_mon", SpiSSMonitor(self, spi_io, self.clk, self.rst), scoreboard=False)
+        self.register("spi_miso_drv", SpiMisoDriver(self, spi_io, self.clk, self.rst), scoreboard=False)
         self.flash_mem = FlashMemoryModel(self.spi_monitor, self.spi_miso_drv, self.spi_ss_mon, Random(self.random.random()))
 
     async def initialise(self) -> None:
@@ -38,88 +39,38 @@ class McuDbgTB(BaseBench):
         self.flash_mem.reset()
 
 
-def stdout_reader(proc, queue):
-    """Runs in a background thread."""
-    for line in proc.stdout:
-        queue.put(line)
-
-    # Signal EOF
-    queue.put(None)
-
-async def start_openocd(dut):
+def openocd_proc():
     proc = Popen(
         shlex.split(f"{OPENOCD} -f {OPENOCD_SCRIPT}"),
-        stdin=DEVNULL, stdout=PIPE, stderr=STDOUT, text=True
+        stdin=DEVNULL, stdout=PIPE, stderr=STDOUT, text=True,
+        universal_newlines=True
     )
-    output_queue = Queue()
-    t=Thread(
-        target=stdout_reader,
-        args=(proc, output_queue),
-        daemon=True,
-    ).start()
-    connected = False
-    while proc.poll() is None:
-        # Drain all currently available lines
-        while True:
-            try:
-                line = output_queue.get_nowait()
-            except Empty:
-                break
-
-            if line is None:
-                break
-            dut._log.info(f"OPENOCD: {line.rstrip()}")
-            if "Listening on port" in line:
-                connected = True
-        if connected:
-            dut._log.info("OpenOCD is ready")
+    for line in proc.stdout:
+        print(f"OPENOCD: {line.rstrip()}")
+        if "Listening on port" in line:
+            print("READY")
             break
-        # Give simulation time to run
-        await Timer(200, units="ns")
-    else:
-        dut._log.info(
-            f"OpenOCD exited with code {proc.returncode}"
-        )
-    return 0
+    with Client() as oocd:
+        print("A1")
+        oocd.halt()
+        #registers = oocd.read_registers(['pc', 'sp'])
+        #print('Program counter: 0x%x' % registers['pc'])
+        #print('Stack pointer: 0x%x' % registers['sp'])
+        #oocd.resume()
+        #oocd.execute('shutdown')
+        print("...................")
 
-
-def openocd_cmdloop(oocd, cmd_queue):
-    print("A4")
-    while True:
-        item = cmd_queue.get(block=True)
-        print(f"Running command: {item['cmd']} with args: {item['args']}.")
-        getattr(oocd, item['cmd'])(*item['args'])
 
 
 @McuDbgTB.testcase(reset_wait_during=2, reset_wait_after=0, timeout=TIMEOUT, shutdown_delay=1, shutdown_loops=1)
 async def halt_at_reset(tb:McuDbgTB, log):
     log.info(f"Test that the testbench is working")
+    p = Process(target=openocd_proc, args=())
+    p.start()
     flash_data = get_flash_data("/foss/designs/mcu-soc/sw/bin/gpio.hex")
     tb.flash_mem.flash(flash_data)
-    log.info(f"Launching OpenOCD!")
-    task = cocotb.start_soon(start_openocd(tb.dut))
-    await Join(task)
-
-    print("A")
-    with Client() as oocd:
-        print("A1")
-        cmd_queue = Queue()
-        t=Thread(
-            target=openocd_cmdloop,
-            args=(oocd, cmd_queue),
-            daemon=True,
-        ).start()
-        print("B")
-        cmd_queue.put({'cmd': 'halt', 'args': []})
-        #oocd.halt()
-        print("C")
-        registers = oocd.read_registers(['pc', 'sp'])
-        print("D")
-    log.info('Program counter: 0x%x' % registers['pc'])
-    log.info('Stack pointer: 0x%x' % registers['sp'])
-    oocd.resume()
-    log.info("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXx")
     await ClockCycles(tb.clk, TIMEOUT)
+    p.join()
 
 
 def test_mcu_dbg_runner():
@@ -129,7 +80,7 @@ def test_mcu_dbg_runner():
         shell=True
     ).stdout.decode('utf-8')[:-1] # Drop last char (newline)
     REMOTE_BITBANG_PATH=f"{RV_DBG_PATH}/tb/remote_bitbang"
-    extra_args=[f'-GTIMEOUT={TIMEOUT+100}']
+    extra_args=[f'-GTIMEOUT={TIMEOUT*2}']
     extra_args+=[f'-LDFLAGS', f'-L{REMOTE_BITBANG_PATH} -Wl,--enable-new-dtags -Wl,-rpath,{REMOTE_BITBANG_PATH} -lrbs'] 
     extra_args+=[f'{RV_DBG_PATH}/tb/SimJTAG.sv']
     runner = get_test_runner("mcu_soc_jtag_tb", extra_args=extra_args)

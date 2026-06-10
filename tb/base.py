@@ -40,7 +40,7 @@ def get_test_runner(hdl_top, extra_args=[]):
     sim = os.getenv("SIM", default="verilator")
     build_args = ["-Wno-fatal", "--no-stop-fail", "--timing"]
     if WAVES:
-        build_args += ["--trace-fst"]
+        build_args += ["--trace-fst", "--trace-structs"]
     if ASSERTIONS:
         build_args += [f"-DASSERTIONS"]
     if RVFI:
