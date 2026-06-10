@@ -20,7 +20,7 @@ from threading import Thread
 from multiprocessing import Process
 
 
-TIMEOUT = 150000
+TIMEOUT = 400000
 
 OPENOCD = "/foss/tools/bin/openocd"
 OPENOCD_SCRIPT = "/foss/designs/mcu-soc/tb/rvj1_debug.cfg"
@@ -51,15 +51,8 @@ def openocd_proc():
             print("READY")
             break
     with Client() as oocd:
-        print("A1")
         oocd.halt()
-        #registers = oocd.read_registers(['pc', 'sp'])
-        #print('Program counter: 0x%x' % registers['pc'])
-        #print('Stack pointer: 0x%x' % registers['sp'])
-        #oocd.resume()
-        #oocd.execute('shutdown')
-        print("...................")
-
+        oocd.resume()
 
 
 @McuDbgTB.testcase(reset_wait_during=2, reset_wait_after=0, timeout=TIMEOUT, shutdown_delay=1, shutdown_loops=1)
