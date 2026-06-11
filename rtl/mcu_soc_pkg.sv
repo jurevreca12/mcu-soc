@@ -4,6 +4,7 @@ package mcu_soc_pkg;
 
   localparam logic [31:0] McuBootAddr     = 32'h1000_0000;
   localparam logic [31:0] McuDmRomAddr    = 32'h0000_0800;
+  localparam logic [31:0] McuDmExcAddr       = 32'h0000_0810;
   localparam logic [6:0]  MVendorIdOffset = 7'h2;
   localparam logic [24:0] MVendorIdBank   = 25'hC;
   localparam logic [31:0] McuMVendorId    = {MVendorIdBank, MVendorIdOffset};

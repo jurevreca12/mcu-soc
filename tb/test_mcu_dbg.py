@@ -20,7 +20,7 @@ from threading import Thread
 from multiprocessing import Process
 
 
-TIMEOUT = 400000
+TIMEOUT = 1200000
 
 OPENOCD = "/foss/tools/bin/openocd"
 OPENOCD_SCRIPT = "/foss/designs/mcu-soc/tb/rvj1_debug.cfg"
@@ -39,31 +39,35 @@ class McuDbgTB(BaseBench):
         self.flash_mem.reset()
 
 
-def openocd_proc():
-    proc = Popen(
-        shlex.split(f"{OPENOCD} -f {OPENOCD_SCRIPT}"),
-        stdin=DEVNULL, stdout=PIPE, stderr=STDOUT, text=True,
-        universal_newlines=True
-    )
-    for line in proc.stdout:
-        print(f"OPENOCD: {line.rstrip()}")
-        if "Listening on port" in line:
-            print("READY")
-            break
-    with Client() as oocd:
-        oocd.halt()
-        oocd.resume()
+    def openocd_proc(self):
+        proc = Popen(
+            shlex.split(f"{OPENOCD} -f {OPENOCD_SCRIPT}"),
+            #stdin=DEVNULL, stdout=PIPE, stderr=STDOUT, text=True,
+            universal_newlines=True
+        )
+        #for line in proc.stdout:
+        #    self.log.info(f"OPENOCD: {line.rstrip()}")
+        #    if "Listening on port" in line:
+        #        self.log.info("OCD READY.")
+        #        break
+        #with Client() as oocd:
+        #    self.log.info("Halting the core.")
+        #    oocd.halt()
+        #    self.log.info("Stepping the core.")
+        #    oocd.execute('step')
+            #self.log.info("Resuming the core.")
+            #oocd.resume()
 
 
 @McuDbgTB.testcase(reset_wait_during=2, reset_wait_after=0, timeout=TIMEOUT, shutdown_delay=1, shutdown_loops=1)
 async def halt_at_reset(tb:McuDbgTB, log):
     log.info(f"Test that the testbench is working")
-    p = Process(target=openocd_proc, args=())
+    p = Process(target=tb.openocd_proc, args=())
     p.start()
     flash_data = get_flash_data("/foss/designs/mcu-soc/sw/bin/gpio.hex")
     tb.flash_mem.flash(flash_data)
     await ClockCycles(tb.clk, TIMEOUT)
-    p.join()
+    #p.join()
 
 
 def test_mcu_dbg_runner():

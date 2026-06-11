@@ -73,17 +73,17 @@ module mcu_soc_jtag_tb #(
   end
 
   initial begin
-  $display("Starting simulation of MCU with JTAG and debug module.");
-  $display("Initialiting memory with: %s", INIT_FILE);
-  $dumpfile(DUMP_FILE);
-  $dumpvars();
-  clk = 1'b0;
-  rstn = 1'b0;
-  repeat (3) @ (posedge clk);
-  rstn = 1'b1;
-  repeat (TIMEOUT) @ (posedge clk);
-  $display("SIMULATION TIMED OUT!");
-  $finish(20);
+    $display("Starting simulation of MCU with JTAG and debug module.");
+    $display("Initialiting memory with: %s", INIT_FILE);
+    $dumpfile(DUMP_FILE);
+    $dumpvars();
+    clk = 1'b0;
+    rstn = 1'b0;
+    repeat (3) @ (posedge clk);
+    rstn = 1'b1;
+    repeat (TIMEOUT) @ (posedge clk);
+    $display("SIMULATION TIMED OUT!");
+    $finish(20);
   end
 
 endmodule

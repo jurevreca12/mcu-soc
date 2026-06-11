@@ -97,6 +97,7 @@ module mcu_soc import mcu_soc_pkg::*; #(
   rvj1_obi #(
     .BootAddr (McuBootAddr),
     .DmRomAddr(McuDmRomAddr),
+    .DmExcAddr(McuDmExcAddr),
     .MVendorId(McuMVendorId),
     .MArchId  (McuMArchId),
     .MImpId   (McuMImpId),
@@ -250,7 +251,8 @@ module mcu_soc import mcu_soc_pkg::*; #(
   dm_obi_top #(
     .NrHarts  (1),
     .BusWidth (DataWidth),
-    .IdWidth  (xbar_cfg.IdWidth + 2)
+    .IdWidth  (xbar_cfg.IdWidth + 2),
+    .DmBaseAddress('0)
   ) dm_obi_top_inst (
     .clk_i       (clk),
     .rst_ni      (rstn),
