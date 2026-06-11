@@ -97,7 +97,6 @@ module mcu_soc import mcu_soc_pkg::*; #(
   rvj1_obi #(
     .BootAddr (McuBootAddr),
     .DmRomAddr(McuDmRomAddr),
-    .DmExcAddr(McuDmExcAddr),
     .MVendorId(McuMVendorId),
     .MArchId  (McuMArchId),
     .MImpId   (McuMImpId),
