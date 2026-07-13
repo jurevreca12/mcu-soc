@@ -9,7 +9,7 @@ dependencies:
   obi:             { git: "https://github.com/jurevreca12/obi.git",             rev: e4c2e12   }
   riscv-dbg:       { git: "https://github.com/pulp-platform/riscv-dbg.git",     rev: 1cd764a   }
   obi_gpio:        { git: "https://github.com/RatkoFri/obi_gpio.git",           rev: bdd78b5   }
-  obi_timer:       { git: "https://github.com/RatkoFri/obi_timer.git",          rev: 7fbe1b4   }
+  obi_timer:       { git: "https://github.com/RatkoFri/obi_timer.git",          rev: 060ba16   }
   obi_uart:        { git: "https://github.com/RatkoFri/obi_uart.git",           rev: 8c13903   }
   obi-spi:         { git: "https://github.com/carotium/obi-spi.git",            rev: 30b3901   }
   obi-rom:         { git: "https://github.com/jurevreca12/boot-rom.git",        rev: 413aa2f   }
