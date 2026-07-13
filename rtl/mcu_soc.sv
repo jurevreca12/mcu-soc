@@ -97,7 +97,6 @@ module mcu_soc import mcu_soc_pkg::*; #(
   rvj1_obi #(
     .BootAddr (McuBootAddr),
     .DmRomAddr(McuDmRomAddr),
-    .DmExcAddr(McuDmExcAddr),
     .MVendorId(McuMVendorId),
     .MArchId  (McuMArchId),
     .MImpId   (McuMImpId),
@@ -141,8 +140,7 @@ module mcu_soc import mcu_soc_pkg::*; #(
     .irq_platform_i ('0),
     .irq_nmi_i      (1'b0),
 
-    .debug_req_i    (debug_req),
-    .debug_rsp_o    ()
+    .ext_dbg_req_i  (debug_req)
   );
   assign obi_instr_agnt                          = obi_agnt_signals_mgr[XbarMgrIfu];
   assign obi_a_chans_mgr[XbarMgrIfu].obi_areq    = obi_instr_areq;

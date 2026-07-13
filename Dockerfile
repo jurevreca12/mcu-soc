@@ -57,9 +57,10 @@ RUN git clone https://github.com/riscv/riscv-openocd.git && \
     ln -s /foss/tools/riscv-openocd/bin/openocd /foss/tools/bin/openocd
 
 RUN apt update && \
-    wget http://security.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.3-2ubuntu0.1_amd64.deb && \
-    sudo apt install ./libtinfo5_6.3-2ubuntu0.1_amd64.deb && \
-    rm ./libtinfo5_6.3-2ubuntu0.1_amd64.deb
+    wget http://security.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.3-2ubuntu0.2_amd64.deb && \
+    sudo apt install ./libtinfo5_6.3-2ubuntu0.2_amd64.deb && \
+    rm ./libtinfo5_6.3-2ubuntu0.2_amd64.deb
+
 
 RUN pip install git+https://gitlab.zapb.de/openocd/python-openocd@dcf8c2b
 
