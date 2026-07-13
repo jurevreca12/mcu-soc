@@ -63,6 +63,8 @@ module mcu_soc import mcu_soc_pkg::*; #(
   logic                 ndmreset;
   logic                 hwsw_rstn;
 
+  logic                 tim_irq;
+
   logic                 dmi_rst_n;
   logic                 dmi_req_valid;
   logic                 dmi_req_ready;
@@ -134,7 +136,7 @@ module mcu_soc import mcu_soc_pkg::*; #(
     .data_rerr_i    (obi_data_rerr),
 
     .irq_external_i (1'b0),
-    .irq_timer_i    (1'b0),
+    .irq_timer_i    (tim_irq),
     .irq_sw_i       (1'b0),
     .irq_lcofi_i    (1'b0),
     .irq_platform_i ('0),
@@ -353,7 +355,7 @@ module mcu_soc import mcu_soc_pkg::*; #(
     .obi_rready_i(obi_rready_signals_sub[XbarSbrTimer]),
     .obi_rdata_o (obi_r_chans_sub[XbarSbrTimer].obi_rdata),
     .obi_rerr_o  (obi_r_chans_sub[XbarSbrTimer].obi_rerr),
-    .overflow_o  ()
+    .overflow_o  (tim_irq)
 );
 
 obi_spi #(

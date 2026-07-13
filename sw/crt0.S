@@ -21,10 +21,8 @@
   .option push
   .option norvc          # forbid compressed encodings in this section
   .align  2              # 4-byte align
-
   jal     x0, _start              # Skip over function pointer table
-  .word   exception_handler  # Pointer read by bootrom at offset 4
-  .word   interrupt_handler  # Pointer read by bootrom at offset 8
+  .word   trap_handler  # Pointer read by bootrom at offset 4
   .option pop
   
 # ==================================================================
@@ -33,6 +31,10 @@
 .globl _start
 .section .text._start
 _start:
+  la   t0, trap_handler
+  csrw mtvec, t0
+  li   t0, 0xFFFFFFFF
+  csrw mie, t0
   la      sp, __stack_pointer$
   .option push
   .option norelax
@@ -44,17 +46,13 @@ _start:
 # Default exception handler (weak, override in C)
 # ==================================================================
 .section .text
-.weak exception_handler
-.globl exception_handler
-exception_handler:
-  ret
 
 # ==================================================================
 # Default interrupt handler (weak, override in C)
 # ==================================================================
-.weak interrupt_handler
-.globl interrupt_handler
-interrupt_handler:
+.weak trap_handler
+.globl trap_handler
+trap_handler:
   li      t0, 7             # timer interrupt ID
   bne     a0, t0, 1f        # not timer? skip
   li      t0, (1 << 7)      # MTIE bit
