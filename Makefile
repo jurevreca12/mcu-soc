@@ -54,7 +54,7 @@ clean:
 	$(MAKE) -C sw/ clean
 
 docker-build:
-	docker build -t iic-osic-tools-plus:0.1 .
+	docker build -t iic-osic-tools-mcu-plus:0.1 .
 
 docker-run-it:
 	docker run -it \
@@ -67,4 +67,4 @@ docker-run-it:
                -v /etc/shadow:/etc/shadow:ro \
 			   -v ~/.cache/:/headless/.cache:rw \
 			   -v $(CWD):/foss/designs/mcu-soc \
-				$(DOCKER_ADD_XILINX_PATH) iic-osic-tools-plus:0.1 -s /bin/bash
+				$(DOCKER_ADD_XILINX_PATH) iic-osic-tools-mcu-plus:0.1 -s /bin/bash
