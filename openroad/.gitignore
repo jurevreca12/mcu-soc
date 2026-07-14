@@ -1,0 +1,8 @@
+logs/
+out/
+reports/
+save/
+temp.sv
+lib_pins
+scripts/04_partial.tcl
+temp.txt

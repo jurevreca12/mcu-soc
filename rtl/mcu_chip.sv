@@ -72,50 +72,50 @@ module mcu_chip (
   `define SUP_CONN ()
 `endif
 
-  // ---- Input pads (sg13g2_IOPadIn: .pad -> .p2c) ----
-  sg13g2_IOPadIn pad_clk          ( `IO_PWR .pad(clk),          .p2c(clk_c)        );
-  sg13g2_IOPadIn pad_rstn         ( `IO_PWR .pad(rstn),         .p2c(rstn_c)       );
-  sg13g2_IOPadIn pad_jtag_tck_i   ( `IO_PWR .pad(jtag_tck_i),   .p2c(jtag_tck_c)   );
-  sg13g2_IOPadIn pad_jtag_tdi_i   ( `IO_PWR .pad(jtag_tdi_i),   .p2c(jtag_tdi_c)   );
-  sg13g2_IOPadIn pad_jtag_tms_i   ( `IO_PWR .pad(jtag_tms_i),   .p2c(jtag_tms_c)   );
-  sg13g2_IOPadIn pad_jtag_trstn_i ( `IO_PWR .pad(jtag_trstn_i), .p2c(jtag_trstn_c) );
-  sg13g2_IOPadIn pad_spi_miso_i   ( `IO_PWR .pad(spi_miso_i),   .p2c(spi_miso_c)   );
-  sg13g2_IOPadIn pad_gpio_in_i_0  ( `IO_PWR .pad(gpio_in_i_0),  .p2c(gpio_in_c[0]) );
-  sg13g2_IOPadIn pad_gpio_in_i_1  ( `IO_PWR .pad(gpio_in_i_1),  .p2c(gpio_in_c[1]) );
-  sg13g2_IOPadIn pad_gpio_in_i_2  ( `IO_PWR .pad(gpio_in_i_2),  .p2c(gpio_in_c[2]) );
-  sg13g2_IOPadIn pad_gpio_in_i_3  ( `IO_PWR .pad(gpio_in_i_3),  .p2c(gpio_in_c[3]) );
+  // ---- Input pads (sg13cmos5l_IOPadIn: .pad -> .p2c) ----
+  sg13cmos5l_IOPadIn pad_clk          ( `IO_PWR .pad(clk),          .p2c(clk_c)        );
+  sg13cmos5l_IOPadIn pad_rstn         ( `IO_PWR .pad(rstn),         .p2c(rstn_c)       );
+  sg13cmos5l_IOPadIn pad_jtag_tck_i   ( `IO_PWR .pad(jtag_tck_i),   .p2c(jtag_tck_c)   );
+  sg13cmos5l_IOPadIn pad_jtag_tdi_i   ( `IO_PWR .pad(jtag_tdi_i),   .p2c(jtag_tdi_c)   );
+  sg13cmos5l_IOPadIn pad_jtag_tms_i   ( `IO_PWR .pad(jtag_tms_i),   .p2c(jtag_tms_c)   );
+  sg13cmos5l_IOPadIn pad_jtag_trstn_i ( `IO_PWR .pad(jtag_trstn_i), .p2c(jtag_trstn_c) );
+  sg13cmos5l_IOPadIn pad_spi_miso_i   ( `IO_PWR .pad(spi_miso_i),   .p2c(spi_miso_c)   );
+  sg13cmos5l_IOPadIn pad_gpio_in_i_0  ( `IO_PWR .pad(gpio_in_i_0),  .p2c(gpio_in_c[0]) );
+  sg13cmos5l_IOPadIn pad_gpio_in_i_1  ( `IO_PWR .pad(gpio_in_i_1),  .p2c(gpio_in_c[1]) );
+  sg13cmos5l_IOPadIn pad_gpio_in_i_2  ( `IO_PWR .pad(gpio_in_i_2),  .p2c(gpio_in_c[2]) );
+  sg13cmos5l_IOPadIn pad_gpio_in_i_3  ( `IO_PWR .pad(gpio_in_i_3),  .p2c(gpio_in_c[3]) );
 
-  // ---- Output pads (sg13g2_IOPadOut16mA: .c2p -> .pad) ----
-  sg13g2_IOPadOut16mA pad_jtag_tdo_o   ( `IO_PWR .pad(jtag_tdo_o),   .c2p(jtag_tdo_c)    );
-  sg13g2_IOPadOut16mA pad_tx           ( `IO_PWR .pad(tx),           .c2p(tx_c)          );
-  sg13g2_IOPadOut16mA pad_spi_ss_o_0   ( `IO_PWR .pad(spi_ss_o_0),   .c2p(spi_ss_c[0])   );
-  sg13g2_IOPadOut16mA pad_spi_sclk_o   ( `IO_PWR .pad(spi_sclk_o),   .c2p(spi_sclk_c)    );
-  sg13g2_IOPadOut16mA pad_spi_mosi_o   ( `IO_PWR .pad(spi_mosi_o),   .c2p(spi_mosi_c)    );
-  sg13g2_IOPadOut16mA pad_gpio_out_o_0 ( `IO_PWR .pad(gpio_out_o_0), .c2p(gpio_out_c[0]) );
-  sg13g2_IOPadOut16mA pad_gpio_out_o_1 ( `IO_PWR .pad(gpio_out_o_1), .c2p(gpio_out_c[1]) );
-  sg13g2_IOPadOut16mA pad_gpio_out_o_2 ( `IO_PWR .pad(gpio_out_o_2), .c2p(gpio_out_c[2]) );
-  sg13g2_IOPadOut16mA pad_gpio_out_o_3 ( `IO_PWR .pad(gpio_out_o_3), .c2p(gpio_out_c[3]) );
+  // ---- Output pads (sg13cmos5l_IOPadOut16mA: .c2p -> .pad) ----
+  sg13cmos5l_IOPadOut16mA pad_jtag_tdo_o   ( `IO_PWR .pad(jtag_tdo_o),   .c2p(jtag_tdo_c)    );
+  sg13cmos5l_IOPadOut16mA pad_tx           ( `IO_PWR .pad(tx),           .c2p(tx_c)          );
+  sg13cmos5l_IOPadOut16mA pad_spi_ss_o_0   ( `IO_PWR .pad(spi_ss_o_0),   .c2p(spi_ss_c[0])   );
+  sg13cmos5l_IOPadOut16mA pad_spi_sclk_o   ( `IO_PWR .pad(spi_sclk_o),   .c2p(spi_sclk_c)    );
+  sg13cmos5l_IOPadOut16mA pad_spi_mosi_o   ( `IO_PWR .pad(spi_mosi_o),   .c2p(spi_mosi_c)    );
+  sg13cmos5l_IOPadOut16mA pad_gpio_out_o_0 ( `IO_PWR .pad(gpio_out_o_0), .c2p(gpio_out_c[0]) );
+  sg13cmos5l_IOPadOut16mA pad_gpio_out_o_1 ( `IO_PWR .pad(gpio_out_o_1), .c2p(gpio_out_c[1]) );
+  sg13cmos5l_IOPadOut16mA pad_gpio_out_o_2 ( `IO_PWR .pad(gpio_out_o_2), .c2p(gpio_out_c[2]) );
+  sg13cmos5l_IOPadOut16mA pad_gpio_out_o_3 ( `IO_PWR .pad(gpio_out_o_3), .c2p(gpio_out_c[3]) );
 
   // ---- Supply pads (power-only; dont_touch; 4 per rail) ----
-  (* dont_touch = "true" *) sg13g2_IOPadIOVdd pad_vddio0 `SUP_CONN ;
-  (* dont_touch = "true" *) sg13g2_IOPadIOVdd pad_vddio1 `SUP_CONN ;
-  (* dont_touch = "true" *) sg13g2_IOPadIOVdd pad_vddio2 `SUP_CONN ;
-  (* dont_touch = "true" *) sg13g2_IOPadIOVdd pad_vddio3 `SUP_CONN ;
+  (* dont_touch = "true" *) sg13cmos5l_IOPadIOVdd pad_vddio0 `SUP_CONN ;
+  (* dont_touch = "true" *) sg13cmos5l_IOPadIOVdd pad_vddio1 `SUP_CONN ;
+  (* dont_touch = "true" *) sg13cmos5l_IOPadIOVdd pad_vddio2 `SUP_CONN ;
+  (* dont_touch = "true" *) sg13cmos5l_IOPadIOVdd pad_vddio3 `SUP_CONN ;
 
-  (* dont_touch = "true" *) sg13g2_IOPadIOVss pad_vssio0 `SUP_CONN ;
-  (* dont_touch = "true" *) sg13g2_IOPadIOVss pad_vssio1 `SUP_CONN ;
-  (* dont_touch = "true" *) sg13g2_IOPadIOVss pad_vssio2 `SUP_CONN ;
-  (* dont_touch = "true" *) sg13g2_IOPadIOVss pad_vssio3 `SUP_CONN ;
+  (* dont_touch = "true" *) sg13cmos5l_IOPadIOVss pad_vssio0 `SUP_CONN ;
+  (* dont_touch = "true" *) sg13cmos5l_IOPadIOVss pad_vssio1 `SUP_CONN ;
+  (* dont_touch = "true" *) sg13cmos5l_IOPadIOVss pad_vssio2 `SUP_CONN ;
+  (* dont_touch = "true" *) sg13cmos5l_IOPadIOVss pad_vssio3 `SUP_CONN ;
 
-  (* dont_touch = "true" *) sg13g2_IOPadVdd   pad_vdd0   `SUP_CONN ;
-  (* dont_touch = "true" *) sg13g2_IOPadVdd   pad_vdd1   `SUP_CONN ;
-  (* dont_touch = "true" *) sg13g2_IOPadVdd   pad_vdd2   `SUP_CONN ;
-  (* dont_touch = "true" *) sg13g2_IOPadVdd   pad_vdd3   `SUP_CONN ;
+  (* dont_touch = "true" *) sg13cmos5l_IOPadVdd   pad_vdd0   `SUP_CONN ;
+  (* dont_touch = "true" *) sg13cmos5l_IOPadVdd   pad_vdd1   `SUP_CONN ;
+  (* dont_touch = "true" *) sg13cmos5l_IOPadVdd   pad_vdd2   `SUP_CONN ;
+  (* dont_touch = "true" *) sg13cmos5l_IOPadVdd   pad_vdd3   `SUP_CONN ;
 
-  (* dont_touch = "true" *) sg13g2_IOPadVss   pad_vss0   `SUP_CONN ;
-  (* dont_touch = "true" *) sg13g2_IOPadVss   pad_vss1   `SUP_CONN ;
-  (* dont_touch = "true" *) sg13g2_IOPadVss   pad_vss2   `SUP_CONN ;
-  (* dont_touch = "true" *) sg13g2_IOPadVss   pad_vss3   `SUP_CONN ;
+  (* dont_touch = "true" *) sg13cmos5l_IOPadVss   pad_vss0   `SUP_CONN ;
+  (* dont_touch = "true" *) sg13cmos5l_IOPadVss   pad_vss1   `SUP_CONN ;
+  (* dont_touch = "true" *) sg13cmos5l_IOPadVss   pad_vss2   `SUP_CONN ;
+  (* dont_touch = "true" *) sg13cmos5l_IOPadVss   pad_vss3   `SUP_CONN ;
 
   logic synced_rst_n;           
   rstgen rstgen_i (             
