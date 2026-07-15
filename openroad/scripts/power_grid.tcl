@@ -63,7 +63,7 @@ proc sram_power { name macro } {
     # Macro Grid and Rings
     define_pdn_grid -macro -cells $macro -name ${name}_grid -orient "R0 R180 MY MX" \
         -grid_over_boundary -voltage_domains {CORE} \
-        -halo {1 1}
+        -halo {10 10}
 
     add_pdn_ring -grid ${name}_grid \
         -layer        {Metal3 Metal4} \

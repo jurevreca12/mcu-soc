@@ -1,35 +1,36 @@
-VERSION 5.7 ;
-NOWIREEXTENSIONATPIN ON ;
-DIVIDERCHAR "/" ;
-BUSBITCHARS "[]" ;
+VERSION 5.8 ;
 
 MACRO bondpad_70x70
-  CLASS COVER BUMP ;
-  FOREIGN bondpad_70x70 ;
-  ORIGIN 0.000 0.000 ;
-  SIZE 70.000 BY 70.000 ;
-
-  PIN PAD
-    DIRECTION INOUT ;
+  CLASS COVER ;
+  ORIGIN -35 -35 ;
+  FOREIGN bondpad_70x70 0 0 ;
+  SIZE 70.0 BY 70.0 ;
+  SYMMETRY X Y R90 ;
+  SITE sg13cmos5l_ioSite ;
+  PIN pad
     USE SIGNAL ;
     PORT
+      LAYER Metal2 ;
+        RECT 0 0 70.0 70.0 ;
+      LAYER Metal3 ;
+        RECT 0 0 70.0 70.0 ;
+      LAYER Metal4 ;
+        RECT 0 0 70.0 70.0 ;
       LAYER TopMetal1 ;
-        RECT 0.000 0.000 70.000 70.000 ;
+        RECT 0 0 70.0 70.0 ;
     END
-  END PAD
+  END pad
 
   OBS
     LAYER Metal1 ;
-      RECT 2.500 2.500 67.500 67.500 ;
+      RECT 0 0 70.0 70.0 ;
     LAYER Metal2 ;
-      RECT 2.000 2.000 68.000 68.000 ;
+      RECT 0 0 70.0 70.0 ;
     LAYER Metal3 ;
-      RECT 1.500 1.500 68.500 68.500 ;
+      RECT 0 0 70.0 70.0 ;
     LAYER Metal4 ;
-      RECT 1.000 1.000 69.000 69.000 ;
+      RECT 0 0 70.0 70.0 ;
     LAYER TopMetal1 ;
-      RECT 0.000 0.000 70.000 70.000 ;
+      RECT 0 0 70.0 70.0 ;
   END
 END bondpad_70x70
-
-END LIBRARY

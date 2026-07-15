@@ -20,3 +20,5 @@ clean:
 	rm -rf ./out/
 	rm -rf ./tmp/
 	rm -rf ./reports/
+	rm -rf ./save/
+	rm -rf ./logs/

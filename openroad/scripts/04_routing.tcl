@@ -47,10 +47,12 @@ utl::report "###################################################################
 set_global_routing_layer_adjustment TopMetal1 0.20
 set_routing_layers -signal Metal2-TopMetal1 -clock Metal2-TopMetal1
 
+#set_thread_count 16
+
 utl::report "Global route"
 global_route -guide_file ${report_dir}/04_${proj_name}_route.guide \
     -congestion_report_file ${report_dir}/04_${proj_name}_route_congestionrpt \
-    -allow_congestion
+    -allow_congestion -verbose
 # Default params but -allow_congestion
 # It continues even if it didn't find a solution (may be able to fix afterwards)
 
@@ -69,7 +71,7 @@ repair_design -verbose
 utl::report "Repair setup and hold violations..."
 repair_timing -setup -verbose -repair_tns 100
 #repair_timing -hold -hold_margin 0.1 -verbose -repair_tns 100
-repair_timing -hold -hold_margin 0.25 -max_buffer_percent 40 -verbose -repair_tns 100
+repair_timing -hold -hold_margin 0.30 -max_buffer_percent 40 -verbose -repair_tns 100
 
 # Repair design using global route parasitics
 utl::report "Perform buffer insertion after repairing setup and hold violations..."
@@ -122,7 +124,7 @@ utl::report "###################################################################
 repair_antennas -ratio_margin 30 -iterations 5
 
 utl::report "Detailed route"
-set_thread_count 8
+#set_thread_count 16
 detailed_route -output_drc ${report_dir}/04_${proj_name}_route_drc.rpt \
                -drc_report_iter_step 5 \
                -save_guide_updates \

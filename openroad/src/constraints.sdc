@@ -33,7 +33,7 @@ puts "Clocks..."
 # is accounted for automatically in clock propagation.
 
 # System clock: target 100 MHz
-set TCK_SYS 20.0
+set TCK_SYS 10.0
 create_clock -name clk_sys -period $TCK_SYS [get_ports clk]
 
 # JTAG clock

@@ -34,3 +34,6 @@ source scripts/floorplan_util.tcl
 
 # Initialize technology data (PDK libraries, LEFs, etc.)
 source scripts/init_tech.tcl
+
+# Set threads to 16 for all processes
+set_thread_count 16

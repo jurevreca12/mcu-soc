@@ -67,8 +67,8 @@ utl::report "###################################################################
 # The sealring is added after OpenROAD
 # hence the OR die area is the final chip size minus the sealring thickness on each side
 
-set chipH    2000; # OR die height (top to bottom)
-set chipW    2000; # OR die width (left to right)
+set chipH    1916; # OR die height (top to bottom)
+set chipW    1916; # OR die width (left to right)
 set padD      180; # pad depth (edge to core)
 set padW       80; # pad width (beachfront)
 set padBond    70; # bonding pad size
@@ -147,15 +147,15 @@ set floor_midpointY   [expr $floor_bottomY + ($floor_topY - $floor_bottomY)/2]
 utl::report "Place Macros"
 
 # Bank0
-set X [expr $floor_rightX - $RamSize_W]
-set Y [expr $floor_topY - $RamSize_H]
+set X [expr $floor_rightX - $RamSize_W - 20]
+set Y [expr $floor_topY - $RamSize_H - 20]
 placeInstance $bank0_sram0 $X $Y R0
 
 
 # defined in init_tech.tcl
 insertTapCells
 
-cut_rows -halo_width_x 1 -halo_width_y 1
+cut_rows -halo_width_x 10 -halo_width_y 10
 global_connect
 
 
