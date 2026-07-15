@@ -54,7 +54,7 @@ read_lef ${pdk_cells_lef}/sg13cmos5l_stdcell.lef
 read_lef ${pdk_io_lef}/sg13cmos5l_io.lef
 puts "Init pad-lef"
 puts "reading files from $pdk_pad_lef"
-read_lef ${pdk_pad_lef}/bondpad_70x70.lef
+read_lef ${pdk_pad_lef}/bondpad_70x70_5L.lef
 
 foreach file [glob -directory $pdk_sram_lef RM_IHPSG13*.lef] {
 	read_lef "$file"
@@ -87,4 +87,4 @@ set stdfill [ list sg13cmos5l_fill_8 sg13cmos5l_fill_4 sg13cmos5l_fill_2 sg13cmo
 set iocorner sg13cmos5l_Corner
 set iofill [ list sg13cmos5l_Filler10000 sg13cmos5l_Filler4000 sg13cmos5l_Filler2000 sg13cmos5l_Filler1000 sg13cmos5l_Filler400 sg13cmos5l_Filler200 ]
 
-set bondPadCell bondpad_70x70
+set bondPadCell bondpad_70x70_5L
