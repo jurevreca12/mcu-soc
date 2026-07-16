@@ -7,21 +7,19 @@ module mcu_chip_tb #(
   parameter int    GPIO_NUM_OUT=4,
   parameter int    SPI_NUM_SLAVES = 1
 ) (
-  output logic tx,
-  output logic [GPIO_NUM_OUT-1:0] gpio_out,
-  output logic [SPI_NUM_SLAVES-1:0] spi_ss_o,
-  output logic spi_sclk_o, 
-  output logic spi_mosi_o, 
-  input  logic spi_miso_i
+  input  wire clk,
+  input  wire rstn,
+  output wire tx,
+  output wire [GPIO_NUM_OUT-1:0] gpio_out,
+  output wire [SPI_NUM_SLAVES-1:0] spi_ss_o,
+  output wire spi_sclk_o, 
+  output wire spi_mosi_o, 
+  input  wire spi_miso_i
 );
-
-  logic clk, rstn;
   /*, tx;
   logic [GPIO_NUM_OUT-1:0] gpio_out;
   logic [SPI_NUM_SLAVES-1:0] spi_ss_o;
   logic spi_sclk_o, spi_mosi_o, spi_miso_i;*/
-
-  always #5 clk = ~clk;
 
   mcu_chip mcux (
     .clk          (clk),
@@ -53,12 +51,9 @@ module mcu_chip_tb #(
   initial begin
   $display("Starting simulation of MCU.");
   $display("Initialiting memory with: %s", INIT_FILE);
+  $display("Timeout set at: %d", TIMEOUT);
   $dumpfile("dump.fst");
   $dumpvars();
-  clk = 1'b0;
-  rstn = 1'b0;
-  repeat (3) @ (posedge clk);
-  rstn = 1'b1;
   repeat (TIMEOUT) @ (posedge clk);
   $finish;
   end

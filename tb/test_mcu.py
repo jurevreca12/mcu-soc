@@ -15,11 +15,14 @@ SPI_DIV_CLK_REG_ADDR = 8
 SS_REG_ADDR = 12
 CTRL_REG_ADDR = 16
 
-TIMEOUT = 1000000
+if GATELEVEL:
+    TIMEOUT = 200
+else:
+    TIMEOUT = 1000000
 
 class McuTB(BaseBench):
     def __init__(self, dut):
-        super().__init__(dut, clk=dut.clk, rst=dut.rstn, rst_active_high=False)
+        super().__init__(dut, clk=dut.clk, clk_drive=True, rst=dut.rstn, rst_active_high=False)
         spi_io = SpiIO(dut, "spi", IORole.INITIATOR, io_style=io_suffix_style)
         self.register("spi_monitor", SpiMonitor(self, spi_io, self.clk, self.rst))
         self.register("spi_ss_mon", SpiSSMonitor(self, spi_io, self.clk, self.rst))
@@ -45,7 +48,13 @@ def get_flash_data(path) -> list[int]:
         mem.append(int(word[0:2], 16))
     return mem
 
-@McuTB.testcase(reset_wait_during=2, reset_wait_after=0, timeout=TIMEOUT, shutdown_delay=1, shutdown_loops=1)
+@McuTB.testcase(
+    reset_wait_during=10, 
+    reset_wait_after=0, 
+    timeout=TIMEOUT, 
+    shutdown_delay=1, 
+    shutdown_loops=1
+)
 async def smoke(tb:McuTB, log):
     log.info(f"Test that the testbench is working")
     flash_data = get_flash_data("/foss/designs/mcu-soc/sw/bin/gpio.hex")

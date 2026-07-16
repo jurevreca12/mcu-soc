@@ -56,6 +56,9 @@ yosys setattr -set keep_hierarchy 1 "t:cdc*phase_*$*"
 yosys setattr -set keep_hierarchy 1 "t:cdc*_src*$*"
 yosys setattr -set keep_hierarchy 1 "t:cdc*_dst*$*"
 yosys setattr -set keep_hierarchy 1 "t:sync$*"
+yosys setattr -set keep_hierarchy 1 "t:sg13cmos5l_IOPadIn$*"
+yosys setattr -set keep_hierarchy 1 "t:rstgen$*"
+yosys setattr -set keep_hierarchy 1 "t:rstgen_bypass$*"
 
 
 # blackbox modules (applies the *blackbox* attribute)

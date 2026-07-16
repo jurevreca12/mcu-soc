@@ -56,13 +56,13 @@ module mcu_chip (
 );
 
   // Core-side nets
-  logic       clk_c, rstn_c;
-  logic       jtag_tck_c, jtag_tdi_c, jtag_tdo_c, jtag_tms_c, jtag_trstn_c;
-  logic       tx_c;
-  logic [3:0] gpio_in_c;
-  logic [3:0] gpio_out_c;
-  logic [0:0] spi_ss_c;
-  logic       spi_sclk_c, spi_mosi_c, spi_miso_c;
+  wire       clk_c, rstn_c, synced_rst_n;
+  wire       jtag_tck_c, jtag_tdi_c, jtag_tdo_c, jtag_tms_c, jtag_trstn_c;
+  wire       tx_c;
+  wire [3:0] gpio_in_c;
+  wire [3:0] gpio_out_c;
+  wire [0:0] spi_ss_c;
+  wire       spi_sclk_c, spi_mosi_c, spi_miso_c;
 
   // Power-pin connection (only emitted with USE_POWER_PINS)
   `define IO_PWR `ifdef USE_POWER_PINS .iovdd(VDDIO), .iovss(VSSIO), .vdd(VDD), .vss(VSS), `endif
@@ -117,7 +117,7 @@ module mcu_chip (
   (* dont_touch = "true" *) sg13cmos5l_IOPadVss   pad_vss2   `SUP_CONN ;
   (* dont_touch = "true" *) sg13cmos5l_IOPadVss   pad_vss3   `SUP_CONN ;
 
-  logic synced_rst_n;           
+           
   rstgen rstgen_i (             
     .clk_i       (clk),         
     .rst_ni      (rstn_c),        
