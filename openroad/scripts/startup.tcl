@@ -37,3 +37,12 @@ source scripts/init_tech.tcl
 
 # Set threads to 16 for all processes
 set_thread_count 16
+
+
+# CDL netlist
+set cdl_netlist "../openroad/out/${proj_name}.cdl"
+set cdl_masters {}
+set pdk_cells_lib ${pdk_dir}
+lappend cdl_masters ${pdk_dir}/ihp-sg13cmos5l/libs.ref/sg13cmos5l_stdcell/cdl/sg13cmos5l_stdcell.cdl
+lappend cdl_masters ${pdk_dir}/ihp-sg13cmos5l/libs.ref/sg13cmos5l_io/cdl/sg13cmos5l_io.cdl
+lappend cdl_masters ${pdk_dir}/ihp-sg13g2/libs.ref/sg13g2_sram/cdl/RM_IHPSG13_1P_1024x64_c2_bm_bist.cdl

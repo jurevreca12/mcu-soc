@@ -22,7 +22,7 @@ def get_rtl_files():
             "/foss/pdks/ihp-sg13cmos5l/libs.ref/sg13cmos5l_sram/verilog/RM_IHPSG13_1P_1024x64_c2_bm_bist.v",
             #"/foss/designs/mcu-soc/yosys/out/mcu-soc_yosys.v",
             "/foss/designs/mcu-soc/yosys/out/netlist_debug.v",
-            "/foss/designs/mcu-soc/tb/mcu_soc_tb.sv",
+            "/foss/designs/mcu-soc/tb/mcu_chip_tb.sv",
         ]
         print("------------------------------------------------------")
         print("RUNNING GATELEVEL SIMULATION!")
@@ -56,8 +56,12 @@ def get_inc_dirs():
 
 def get_test_runner(hdl_top, extra_args=[]):
     sim = os.getenv("SIM", default="verilator")
-    sources_file = os.getenv("SOURCES_FILE", default="/foss/designs/mcu-soc/tb/sources.f")
-    build_args = ["-Wno-fatal", "--no-stop-fail", "--timing", "-f", sources_file]
+    build_args = ["-Wno-fatal", "--no-stop-fail", "--timing"]
+    if not GATELEVEL:
+        sources_file = os.getenv("SOURCES_FILE", default="/foss/designs/mcu-soc/tb/sources.f")
+        build_args += ["-f", sources_file]
+    else:
+        build_args += ['-Wno-ASSIGNIN']
     if WAVES:
         build_args += ["--trace-fst", "--trace-structs"]
     if ASSERTIONS:
@@ -65,13 +69,21 @@ def get_test_runner(hdl_top, extra_args=[]):
     if RVFI:
         build_args += [f"-DRVFI"]
     build_args += extra_args
-    if sim == "icarus":
-        build_args = ["-Wall"]
     runner = get_runner(sim)
-    runner.build(
-        build_args=build_args,
-        hdl_toplevel=hdl_top,
-        always=True,
-        waves=False,
-    )
+    if GATELEVEL:
+        runner.build(
+            sources=get_rtl_files(),
+            includes=get_inc_dirs(),
+            build_args=build_args,
+            hdl_toplevel=hdl_top,
+            always=True,
+            waves=False,
+        )
+    else:
+        runner.build(
+            build_args=build_args,
+            hdl_toplevel=hdl_top,
+            always=True,
+            waves=False,
+        )
     return runner

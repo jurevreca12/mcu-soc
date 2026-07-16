@@ -41,6 +41,10 @@ utl::report "Read netlist: ${netlist}"
 read_verilog $netlist
 link_design $top_design
 
+# output cdl for LVS
+utl::report "Outputing cdl netlist: ${cdl_netlist}"
+write_cdl -include_fillers -masters $cdl_masters ${cdl_netlist}
+
 utl::report "Read constraints"
 read_sdc src/constraints.sdc
 

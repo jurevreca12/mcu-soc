@@ -2,7 +2,7 @@ from forastero.io import IORole, io_suffix_style
 from forastero.driver import DriverEvent
 from forastero import BaseBench
 from cocotb.triggers import ClockCycles
-from base import get_test_runner, WAVES
+from base import get_test_runner, WAVES, GATELEVEL
 
 from random import Random
 from spi.io import SpiIO
@@ -54,8 +54,12 @@ async def smoke(tb:McuTB, log):
 
 
 def test_mcu_runner():
-    runner = get_test_runner("mcu_soc_tb", extra_args=[f"-GTIMEOUT={TIMEOUT+100}"])
-    runner.test(hdl_toplevel="mcu_soc_tb", test_module="test_mcu", waves=WAVES)
+    if GATELEVEL:
+        tb_top = "mcu_chip_tb"
+    else:
+        tb_top = "mcu_soc_tb"
+    runner = get_test_runner(tb_top, extra_args=[f"-GTIMEOUT={TIMEOUT+100}"])
+    runner.test(hdl_toplevel=tb_top, hdl_toplevel_lang="verilog", test_module="test_mcu", waves=WAVES)
 
 if __name__ == "__main__":
     test_mcu_runner()

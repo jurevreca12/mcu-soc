@@ -71,7 +71,7 @@ repair_design -verbose
 utl::report "Repair setup and hold violations..."
 repair_timing -setup -verbose -repair_tns 100
 #repair_timing -hold -hold_margin 0.1 -verbose -repair_tns 100
-repair_timing -hold -hold_margin 0.30 -max_buffer_percent 40 -verbose -repair_tns 100
+repair_timing -hold -hold_margin 0.35 -max_buffer_percent 40 -verbose -repair_tns 100
 
 # Repair design using global route parasitics
 utl::report "Perform buffer insertion after repairing setup and hold violations..."
