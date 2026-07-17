@@ -15,10 +15,7 @@ SPI_DIV_CLK_REG_ADDR = 8
 SS_REG_ADDR = 12
 CTRL_REG_ADDR = 16
 
-if GATELEVEL:
-    TIMEOUT = 50000
-else:
-    TIMEOUT = 1000000
+TIMEOUT = 1000000
 
 class McuTB(BaseBench):
     def __init__(self, dut):

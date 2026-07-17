@@ -1,7 +1,7 @@
 module mcu_chip_tb #(
   parameter string INIT_FILE="",
   parameter int    INIT_FILE_BIN=0,
-  parameter int    MEM_SIZE_WORDS=4096,
+  parameter int    MEM_SIZE_WORDS=2048,
   parameter int    TIMEOUT=50000,
   parameter int    GPIO_NUM_IN=4,
   parameter int    GPIO_NUM_OUT=4,

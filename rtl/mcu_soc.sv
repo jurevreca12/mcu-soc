@@ -1,7 +1,7 @@
 module mcu_soc import mcu_soc_pkg::*; #(
   parameter  string INIT_FILE="",
   parameter  int    INIT_FILE_BIN=0,
-  parameter  int    MEM_SIZE_WORDS=4096,
+  parameter  int    MEM_SIZE_WORDS=2048,
   parameter  int    GPIO_NUM_IN=4,
   parameter  int    GPIO_NUM_OUT=4,
   parameter  int    SPI_NUM_SLAVES=1
@@ -88,7 +88,7 @@ module mcu_soc import mcu_soc_pkg::*; #(
   logic       obi_rready_signals_sub [NumSubordinates];
 
   addr_map_t address_map [xbar_cfg.NoMaps];
-  assign address_map[0] = '{idx: 0,   base: 32'h8000_0000, mask: 32'hffff_4000}; 
+  assign address_map[0] = '{idx: 0,   base: 32'h8000_0000, mask: 32'hffff_2000}; 
   assign address_map[1] = '{idx: 1,   base: 32'h6000_0000, mask: 32'hffff_f200};
   assign address_map[2] = '{idx: 2,   base: 32'h4000_0000, mask: 32'hffff_f200};
   assign address_map[3] = '{idx: 3,   base: 32'h3000_0000, mask: 32'hffff_f200};

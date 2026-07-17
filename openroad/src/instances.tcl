@@ -64,7 +64,7 @@ check_handle bank0_sram0 $bank0_sram0
 # Left empty on purpose (no check_handle -> no spurious warnings).
 
 set MCU				i_mcu_soc
-set JTAG			$MCU.dmi_jtag_inst
+set JTAG			$MCU/dmi_jtag_inst
 set JTAG_CDC_REQ		$JTAG/i_dmi_cdc.i_cdc_req
 set JTAG_ASYNC_REQ_START	[get_fanin -to [get_nets $JTAG_CDC_REQ/*async_data*] -flat -startpoints_only -only_cells]
 set JTAG_ASYNC_REQ_END [list]
