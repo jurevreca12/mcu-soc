@@ -33,6 +33,10 @@ load_checkpoint 04_${proj_name}.routed
 setDefaultParasitics
 set_dont_use $dont_use_cells
 
+# Repair design using global route parasitics                                        
+utl::report "FANOUT Vilator list:" 
+report_wns                                                                
+
 
 utl::report "###############################################################################"
 utl::report "# Stage 05: FINISHING"

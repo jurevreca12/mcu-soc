@@ -17,7 +17,8 @@ class SpiMonitor(BaseMonitor):
                 await RisingEdge(self.io.dut.spi_sclk_o)
                 spi_command += (int(self.io.get("mosi")) << index)
                 assert self.io.get("ss") != 0x1, "ERROR: SS raised during transaction."
-                
+            
+            print(f"Captured data on SPI: {hex(spi_command)}")
             capture(SpiTrans(data=spi_command))
 
 class SpiSSMonitor(BaseMonitor):
@@ -40,7 +41,7 @@ class SpiMisoDriver(BaseDriver):
         spi_data = obj.data
         sent = 0
 
-        #print(f'Sending {spi_data} on SPI')
+        print(f'Sending {hex(spi_data)} on SPI')
 
         while index >= 0:
             while (self.rst == 0):

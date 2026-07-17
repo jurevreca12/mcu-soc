@@ -122,3 +122,10 @@ set_output_delay -min -add_delay -clock clk_sys [ expr $TCK_SYS * 0.10 ] [get_po
 set_output_delay -max -add_delay -clock clk_sys [ expr $TCK_SYS * 0.30 ] [get_ports {spi_ss_o_* spi_sclk_o spi_mosi_o}]
 set_input_delay  -min -add_delay -clock clk_sys [ expr $TCK_SYS * 0.10 ] [get_ports spi_miso_i]
 set_input_delay  -max -add_delay -clock clk_sys [ expr $TCK_SYS * 0.30 ] [get_ports spi_miso_i]
+
+
+
+# POWER
+set_false_path -from [get_ports {VDD VDDIO VSS VSSIO}]
+set_false_path -to   [get_ports {VDD VDDIO VSS VSSIO}]
+set_disable_timing   [get_ports {VDD VDDIO VSS VSSIO}]

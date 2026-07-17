@@ -13,6 +13,9 @@ routing:
 finishing:
 	./run_backend.sh --finishing
 
+cdl:
+	./run_backend.sh --cdl
+
 all:
 	./run_backend.sh --all
 

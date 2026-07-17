@@ -55,7 +55,7 @@ utl::report "Remove buffers"
 remove_buffers
 
 utl::report "Repair design"
-repair_design -verbose
+repair_design -verbose -slew_margin 5 -cap_margin 10
 
 save_checkpoint 02-01_${proj_name}.pre_place
 

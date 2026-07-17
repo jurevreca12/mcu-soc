@@ -201,6 +201,7 @@ module mcu_soc import mcu_soc_pkg::*; #(
     .addr_map_i            ( address_map )
   );
 
+  assign obi_r_chans_sub[XbarSbrMem].obi_rerr = 1'b0;
   obi_ram #(
     .INIT_FILE     (INIT_FILE),
     .INIT_FILE_BIN (INIT_FILE_BIN),
@@ -248,6 +249,9 @@ module mcu_soc import mcu_soc_pkg::*; #(
     .tdo_oe_o        ()
   );
 
+  assign obi_a_chans_mgr[XbarMgrDbg].obi_aid = '0;
+  assign obi_rready_signals_mgr[XbarMgrDbg]  = 1'b1;
+  assign obi_r_chans_sub[XbarSbrDbg].obi_rerr = 1'b0;
   dm_obi_top #(
     .NrHarts  (1),
     .BusWidth (DataWidth),
@@ -296,6 +300,7 @@ module mcu_soc import mcu_soc_pkg::*; #(
     .dmi_resp_o        (dmi_resp)
   );
 
+  assign obi_r_chans_sub[XbarSbrUart].obi_rid = '0;
   obi_uart obi_uart_inst (
     .clk_i  (clk),
     .rstn_i (hwsw_rstn),
@@ -315,6 +320,7 @@ module mcu_soc import mcu_soc_pkg::*; #(
     .tx_o        (tx)
   );
 
+   assign obi_r_chans_sub[XbarSbrGpio].obi_rid = '0;
    obi_gpio #(
        .ADDR_WIDTH(32),
        .DATA_WIDTH(32),
@@ -338,6 +344,7 @@ module mcu_soc import mcu_soc_pkg::*; #(
        .gpio_out_o  (gpio_out_o)
    );
 
+   assign obi_r_chans_sub[XbarSbrTimer].obi_rid = '0;
    obi_timer #(
     .ADDR_WIDTH(32),
     .DATA_WIDTH(32)
@@ -358,6 +365,7 @@ module mcu_soc import mcu_soc_pkg::*; #(
     .overflow_o  (tim_irq)
 );
 
+assign obi_r_chans_sub[XbarSbrSpi].obi_rid = '0;
 obi_spi #(
   .NUM_SLAVES (SPI_NUM_SLAVES)
 ) obi_spi_inst (
@@ -384,6 +392,7 @@ obi_spi #(
   .complete_o   ()
 );
 
+assign obi_r_chans_sub[XbarSbrBoot].obi_rid = '0;
 obi_rom obi_rom_inst (
   .clk_i        (clk),
   .rstn_i       (hwsw_rstn),

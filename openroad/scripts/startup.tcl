@@ -40,7 +40,8 @@ set_thread_count 16
 
 
 # CDL netlist
-set cdl_netlist "../openroad/out/${proj_name}.cdl"
+set cdl_netlist     "../openroad/out/${proj_name}.cdl"
+set cdl_netlist_lvs "../openroad/out/${proj_name}_lvs.cdl"
 set cdl_masters {}
 set pdk_cells_lib ${pdk_dir}
 lappend cdl_masters ${pdk_dir}/ihp-sg13cmos5l/libs.ref/sg13cmos5l_stdcell/cdl/sg13cmos5l_stdcell.cdl

@@ -69,7 +69,7 @@ def get_test_runner(hdl_top, extra_args=[]):
     if RVFI:
         build_args += [f"-DRVFI"]
     build_args += extra_args
-    if sim == "icarus":
+    if sim != "verilator":
         build_args = []
     runner = get_runner(sim)
     if GATELEVEL:
