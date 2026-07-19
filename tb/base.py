@@ -21,8 +21,11 @@ def get_rtl_files():
             "/foss/pdks/ihp-sg13cmos5l/libs.ref/sg13cmos5l_sram/verilog/RM_IHPSG13_1P_core_behavioral_bm_bist.v",
             "/foss/pdks/ihp-sg13cmos5l/libs.ref/sg13cmos5l_sram/verilog/RM_IHPSG13_1P_1024x64_c2_bm_bist.v",
             #"/foss/designs/mcu-soc/yosys/out/mcu-soc_yosys.v",
+            #"/foss/designs/mcu-soc/openroad/out/mcu-soc_lvs.v",
             "/foss/designs/mcu-soc/yosys/out/netlist_debug.v",
             "/foss/designs/mcu-soc/tb/mcu_chip_tb.sv",
+            "/foss/designs/mcu-soc/tb/mcu_chip_jtag_tb.sv",
+            "/foss/designs/mcu-soc/.bender/git/checkouts/riscv-dbg-08557efb49681bce/tb/SimJTAG.sv",
         ]
         print("------------------------------------------------------")
         print("RUNNING GATELEVEL SIMULATION!")

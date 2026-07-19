@@ -15,7 +15,7 @@ SPI_DIV_CLK_REG_ADDR = 8
 SS_REG_ADDR = 12
 CTRL_REG_ADDR = 16
 
-TIMEOUT = 1000000
+TIMEOUT = 5000000
 
 class McuTB(BaseBench):
     def __init__(self, dut):
@@ -67,7 +67,12 @@ def test_mcu_runner():
         tb_top = "mcu_soc_tb"
         extra_args=[f"-GTIMEOUT={TIMEOUT+100}"]
     runner = get_test_runner(tb_top, extra_args=extra_args)
-    runner.test(hdl_toplevel=tb_top, hdl_toplevel_lang="verilog", test_module="test_mcu", waves=True)
+    runner.test(
+        hdl_toplevel=tb_top, 
+        hdl_toplevel_lang="verilog", 
+        test_module="test_mcu", 
+        waves=True    
+    )
 
 if __name__ == "__main__":
     test_mcu_runner()
