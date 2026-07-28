@@ -9,7 +9,8 @@ RUN apt update && \
 RUN useradd -m -u 1000 developer
 USER developer
 
-RUN pip install  "cython<3.0.0" wheel && \
+RUN pip install --upgrade pip && \
+    pip install  "cython<3.0.0" wheel && \
     pip install  "PyYAML==5.2" --no-build-isolation && \ 
     pip install vcs_versioning pyelftools pexpect && \
     pip install git+https://github.com/jurevreca12/forastero.git@f546470 \
@@ -60,10 +61,10 @@ RUN cd /foss/tools/ && \
 ENV RISCV_DV=/foss/tools/riscv-dv
 
 
-RUN git clone https://github.com/riscv-collab/riscv-openocd --recurse-submodules && \
+RUN git clone https://github.com/riscv-collab/riscv-openocd && \
     cd riscv-openocd && \
     git checkout eb01c63 && \
-    git submodule update && \
+    git submodule update --init ./jimtcl && \
     mkdir /foss/tools/riscv-openocd/ && \
     ./bootstrap && \
     ./configure --prefix=/foss/tools/riscv-openocd/ --enable-internal-jimtcl && \
@@ -77,4 +78,60 @@ RUN apt update && \
     wget http://security.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.3-2ubuntu0.2_amd64.deb && \
     sudo apt install ./libtinfo5_6.3-2ubuntu0.2_amd64.deb && \
     rm ./libtinfo5_6.3-2ubuntu0.2_amd64.deb
+
+RUN cd /foss/tools && \
+    git clone https://github.com/openXC7/prjxray.git && \
+    cd prjxray && \
+    git checkout 132342f && \
+    git submodule init && \
+    git submodule update && \
+    mkdir build && \
+    cd build && \
+    cmake .. && \
+    make -j$(nproc) && \
+    make install && \
+    cd .. && \
+    pip install -r requirements.txt && \
+    sed -i "3i sys.path.append('/foss/tools/prjxray')" /usr/local/bin/fasm2frames
+
+RUN cd /foss/tools/ && \
+    git clone https://github.com/openXC7/prjxray-db && \
+    cd prjxray-db && \
+    git checkout 7a36171
+
+RUN apt install -y libboost-all-dev \
+                   libantlr4-runtime-dev \
+                   libeigen3-dev
+
+RUN cd /foss/tools && \
+    git clone https://github.com/openXC7/nextpnr-xilinx.git nextpnr-xilinx && \
+    cd nextpnr-xilinx && \
+    git checkout b5ca546 && \
+    git submodule init && \
+    git submodule update && \
+    mkdir build && \
+    cd build && \
+    cmake -DARCH=xilinx .. && \
+    make -j$(nproc) && \
+    make install
+
+RUN cd /foss/tools/nextpnr-xilinx && \
+    python xilinx/python/bbaexport.py --device xc7a100tcsg324-1 --bba xilinx/xc7a100t.bba && \
+    ./build/bbasm -l xilinx/xc7a100t.bba xilinx/xc7a100t.bin && \
+    rm xilinx/xc7a100t.bba
+
+#RUN apt install g++ unzip zip
+
+#RUN wget https://github.com/bazelbuild/bazelisk/releases/download/v1.29.0/bazelisk-amd64.deb && \
+#    sudo apt install ./bazelisk-amd64.deb && \
+#    rm ./bazelisk-amd64.deb
+
+#RUN cd /foss/tools && \
+#    git clone https://github.com/lromor/fpga-assembler.git fpga-assembler && \
+#    cd fpga-assembler && \
+#    bazel build -c opt //fpga:fpga-as && install -D --strip bazel-bin/fpga/fpga-as /foss/tools/bin/fpga-as
+
+#    bazel run -c opt //fpga:fpga-as -- --prjxray_db_path=/foss/tools/prjxray-db/artix7 --part=xc7a100tcsg324-1 < /foss/designs/mcu-soc/impl/nexys-A7100T/output/mcu_soc.fasm > /foss/designs/mcu-soc/impl/nexys-A7100T/output/bazel.bit
+    
+
 WORKDIR /foss/designs/mcu-soc

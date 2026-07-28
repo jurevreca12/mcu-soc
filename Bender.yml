@@ -17,7 +17,7 @@ dependencies:
 sources:
     - rtl/mcu_soc_pkg.sv
     - rtl/mcu_soc.sv
-    - rtl/mcu_chip.sv
+      #    - rtl/mcu_chip.sv
     - tb/mcu_soc_tb.sv
     - tb/mcu_soc_jtag_tb.sv
 
