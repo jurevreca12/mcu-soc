@@ -26,6 +26,7 @@ module mcu_soc_xilinx import mcu_soc_pkg::*; #(
 
   output  logic                         test_o
 );
+
   mcu_soc #(
     .INIT_FILE     (INIT_FILE),
     .INIT_FILE_BIN (INIT_FILE_BIN),
