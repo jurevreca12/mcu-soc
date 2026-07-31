@@ -4,7 +4,7 @@ package:
     - "Jure Vreča <jure.vreca@ijs.si>"
 
 dependencies:
-  std-lib:         { git: "https://github.com/jurevreca12/std-lib.git",         rev: 854b660   }
+  std-lib:         { git: "https://github.com/jurevreca12/std-lib.git",     version: 0.1.1   }
   rvj1:            { git: "https://github.com/jurevreca12/rvj1.git",            rev: 2655b3c   }
   obi:             { git: "https://github.com/jurevreca12/obi.git",             rev: b189044   }
   riscv-dbg:       { git: "https://github.com/pulp-platform/riscv-dbg.git",     rev: 1cd764a   }
@@ -12,14 +12,17 @@ dependencies:
   obi_timer:       { git: "https://github.com/RatkoFri/obi_timer.git",          rev: 89c8e19   }
   obi_uart:        { git: "https://github.com/RatkoFri/obi_uart.git",           rev: 7f9d35d   }
   obi-spi:         { git: "https://github.com/carotium/obi-spi.git",            rev: d3ccb24   }
-  obi-rom:         { git: "https://github.com/jurevreca12/boot-rom.git",        rev: 3df847d   }
+  obi-rom:         { git: "https://github.com/carotium/boot-rom.git",       version: 0.0.3   }
 
 sources:
     - rtl/mcu_soc_pkg.sv
     - rtl/mcu_soc.sv
-      #    - rtl/mcu_chip.sv
     - tb/mcu_soc_tb.sv
     - tb/mcu_soc_jtag_tb.sv
+
+    - target: asic
+      files:
+        - rtl/mcu_chip.sv
 
     - target: xilinx
       files:
