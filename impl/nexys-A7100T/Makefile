@@ -4,12 +4,14 @@ SHELL=bash
 
 FPGA_DB=/foss/tools/nextpnr-xilinx/xilinx/xc7a100t.bin
 
+SYNTHESIS ?= 0
+
 all: output/impl_netlist.edif pnr bitgen
 pnr: output/mcu_soc.fasm
 bitgen: output/mcu_soc.bit
 
 mcu_soc.flist:
-	bender script verilator -t xilinx -t rtl -t bscane &> mcu_soc.flist
+	bender script verilator -t xilinx -t rtl -t bscane -t fpga &> mcu_soc.flist
 
 #synth.flist: $(wildcard ../../*.{sv,v})
 #	python create_flist.py
@@ -17,7 +19,9 @@ mcu_soc.flist:
 output:
 	mkdir output
 
-output/impl_netlist.edif: mcu_soc.flist output
+yosys_output = output/impl_netlist.edif output/impl_netlist.v output/impl_netlist.blif output/impl_netlist.json
+
+$(yosys_output): mcu_soc.flist output
 	yosys -c synth.tcl -l output/yosys.log
 
 output/mcu_soc.fasm: output/impl_netlist.json
