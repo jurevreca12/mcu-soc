@@ -1,0 +1,51 @@
+set_property LOC E3 [get_ports {clk}]
+set_property IOSTANDARD LVCMOS33 [get_ports {clk}]
+create_clock -add -name sys_clk_pin -period 20.00 [get_ports {clk}]
+
+set_property LOC N17 [get_ports {rst}]
+set_property IOSTANDARD LVCMOS33 [get_ports {rst}]
+
+set_property LOC D4 [get_ports {tx}]
+set_property IOSTANDARD LVCMOS33 [get_ports {tx}]
+#set_property LOC C4 [get_ports {rx}]
+#set_property IOSTANDARD LVCMOS33 [get_ports {rx}]
+
+set_property LOC J15 [get_ports {gpio_in_i[0]}]
+set_property LOC L16 [get_ports {gpio_in_i[1]}]
+set_property LOC M13 [get_ports {gpio_in_i[2]}]
+set_property LOC R15 [get_ports {gpio_in_i[3]}]
+
+set_property IOSTANDARD LVCMOS33 [get_ports {gpio_in_i[0]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {gpio_in_i[1]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {gpio_in_i[2]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {gpio_in_i[3]}]
+
+set_property LOC H17 [get_ports {gpio_out_o[0]}]
+set_property LOC K15 [get_ports {gpio_out_o[1]}]
+set_property LOC J13 [get_ports {gpio_out_o[2]}]
+set_property LOC N14 [get_ports {gpio_out_o[3]}]
+
+set_property IOSTANDARD LVCMOS33 [get_ports {gpio_out_o[0]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {gpio_out_o[1]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {gpio_out_o[2]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {gpio_out_o[3]}]
+
+set_property LOC R18 [get_ports {test_o}]
+set_property IOSTANDARD LVCMOS33 [get_ports {test_o}]
+
+set_property LOC C17 [get_ports {spi_ss_o}]
+set_property LOC D18 [get_ports {spi_mosi_o}]
+set_property LOC E18 [get_ports {spi_miso_i}]
+set_property LOC G17 [get_ports {spi_sclk_o}]
+#set_property LOC D17 [get_ports {JA[7]}]
+set_property LOC E17 [get_ports {spi_rstn_o}]
+set_property LOC F18 [get_ports {spi_wpn_o}]
+set_property LOC G18 [get_ports {spi_hldn_o}]
+
+set_property IOSTANDARD LVCMOS33 [get_ports {spi_ss_o}]
+set_property IOSTANDARD LVCMOS33 [get_ports {spi_mosi_o}]
+set_property IOSTANDARD LVCMOS33 [get_ports {spi_miso_i}]
+set_property IOSTANDARD LVCMOS33 [get_ports {spi_sclk_o}]
+set_property IOSTANDARD LVCMOS33 [get_ports {spi_rstn_o}]
+set_property IOSTANDARD LVCMOS33 [get_ports {spi_wpn_o}]
+set_property IOSTANDARD LVCMOS33 [get_ports {spi_hldn_o}]
