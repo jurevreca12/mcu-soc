@@ -11,7 +11,7 @@ dependencies:
   obi_gpio:        { git: "https://github.com/RatkoFri/obi_gpio.git",           rev: 72541fc   }
   obi_timer:       { git: "https://github.com/RatkoFri/obi_timer.git",          rev: 89c8e19   }
   obi_uart:        { git: "https://github.com/RatkoFri/obi_uart.git",           rev: 7f9d35d   }
-  obi-spi:         { git: "https://github.com/carotium/obi-spi.git",            rev: d3ccb24   }
+  obi-spi:         { git: "https://github.com/carotium/obi-spi.git",        version: 0.1.0   }
   obi-rom:         { git: "https://github.com/carotium/boot-rom.git",       version: 0.0.3   }
 
 sources:
