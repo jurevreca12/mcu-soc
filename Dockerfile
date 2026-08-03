@@ -51,7 +51,7 @@ RUN git clone https://github.com/YosysHQ/riscv-formal && \
     sed -i "s/with\sopen(f\"\.\.\/\.\./with open(f\"\/foss\/tools\/riscv-formal/" \
         /foss/tools/riscv-formal/checks/genchecks.py
 
-RUN cd /foss/tools/ && \
+RUN cd /foss/tools && \
     git clone https://github.com/chipsalliance/riscv-dv && \
     cd riscv-dv && \
     git checkout b7a0b4b && \
@@ -94,7 +94,7 @@ RUN cd /foss/tools && \
     pip install -r requirements.txt && \
     sed -i "3i sys.path.append('/foss/tools/prjxray')" /usr/local/bin/fasm2frames
 
-RUN cd /foss/tools/ && \
+RUN cd /foss/tools && \
     git clone https://github.com/openXC7/prjxray-db && \
     cd prjxray-db && \
     git checkout 7a36171
@@ -120,18 +120,15 @@ RUN cd /foss/tools/nextpnr-xilinx && \
     ./build/bbasm -l xilinx/xc7a100t.bba xilinx/xc7a100t.bin && \
     rm xilinx/xc7a100t.bba
 
-#RUN apt install g++ unzip zip
+RUN apt install g++ unzip zip
 
-#RUN wget https://github.com/bazelbuild/bazelisk/releases/download/v1.29.0/bazelisk-amd64.deb && \
-#    sudo apt install ./bazelisk-amd64.deb && \
-#    rm ./bazelisk-amd64.deb
+RUN wget https://github.com/bazelbuild/bazelisk/releases/download/v1.29.0/bazelisk-amd64.deb && \
+    apt install ./bazelisk-amd64.deb && \
+    rm ./bazelisk-amd64.deb
 
-#RUN cd /foss/tools && \
-#    git clone https://github.com/lromor/fpga-assembler.git fpga-assembler && \
-#    cd fpga-assembler && \
-#    bazel build -c opt //fpga:fpga-as && install -D --strip bazel-bin/fpga/fpga-as /foss/tools/bin/fpga-as
-
-#    bazel run -c opt //fpga:fpga-as -- --prjxray_db_path=/foss/tools/prjxray-db/artix7 --part=xc7a100tcsg324-1 < /foss/designs/mcu-soc/impl/nexys-A7100T/output/mcu_soc.fasm > /foss/designs/mcu-soc/impl/nexys-A7100T/output/bazel.bit
-    
+RUN cd /foss/tools && \
+    git clone https://github.com/lromor/fpga-assembler.git fpga-assembler && \
+    cd fpga-assembler && \
+    bazel build -c opt //fpga:fpga-as && install -D --strip bazel-bin/fpga/fpga-as /foss/tools/bin/fpga-as
 
 WORKDIR /foss/designs/mcu-soc
