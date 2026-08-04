@@ -15,9 +15,9 @@
 #export PDK_ROOT="$env(PDK_ROOT)"
 
 if [[ -n "${BASH_SOURCE[0]}" ]]; then
-    export MCU_ROOT=$(realpath $(dirname "${BASH_SOURCE[0]}"))
+    export MCU_ROOT=$(realpath $(dirname "${BASH_SOURCE[0]}"))/../
 else
-    export MCU_ROOT=$(pwd)
+    export MCU_ROOT=$(pwd)/../
 fi
 echo "[INFO][ENV] MCU root: $MCU_ROOT"
 

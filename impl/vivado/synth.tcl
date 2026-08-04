@@ -28,4 +28,4 @@ opt_design
 place_design
 route_design
 
-write_bitstream -force ${output_dir}/impl.bit -bin_file
+write_bitstream -force ${output_dir}/mcu_soc.bit -bin_file

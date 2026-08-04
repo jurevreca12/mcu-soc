@@ -6,3 +6,4 @@ clean:
 	rm -rf tmp/
 	rm -rf out/
 	rm -rf reports/
+	rm mcu-soc.log

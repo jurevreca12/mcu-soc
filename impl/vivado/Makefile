@@ -6,14 +6,14 @@ REPORTS = ./output/post_synth_power.rpt \
 		  ./output/post_synth_clock_interaction.rpt \
 		  ./output/post_synth_high_fanout_nets.rpt
 NETLISTS = ./output/impl_netlist.v ./output/impl_netlist.edif
-BITFILES = ./output/impl.bin ./output/impl.bit
+BITFILES = ./output/mcu_soc.bin ./output/mcu_soc.bit
 
 SVFILES   = $(shell find -name "*.sv" -exec basename \{} \;)
 SDBFILESX = $(SVFILES:%=./xsim.dir/work/%)
 SDBFILES  = $(SDBFILESX:.sv=.sdb)
 MODULES   = $(SVFILES:.sv=)
 
-all: ./output/impl.bit
+all: ./output/mcu_soc.bit
 sim: ./output/tb.vcd
 
 ./output/:
