@@ -21,7 +21,7 @@ RV_DBG_PATH := $(shell bender path riscv-dbg)
 REMOTE_BITBANG_PATH := $(RV_DBG_PATH)/tb/remote_bitbang/
 
 mcu_soc.f:
-	$(BENDER) script verilator -t rtl &> mcu_soc.f
+	$(BENDER) script verilator -t rtl -t sim &> mcu_soc.f
 
 $(SW_HEX_FILE): sw/*.c sw/*.h sw/*.S sw/*.ld
 	$(MAKE) -C sw/ compile	
