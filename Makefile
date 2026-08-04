@@ -62,6 +62,11 @@ docker-run-it:
 			   --user ${CUID}:${CGID} \
 			   -e "UID=${CUID}" \
 			   -e "GID=${CGID}" \
+               -e "PDK=ihp-sg13cmos5l" \
+               -e "PDKPATH=/foss/pdks/ihp-sg13cmos5l" \
+               -e "STD_CELL_LIBRARY=sg13cmos5l_stdcell" \
+               -e "SPICE_USERINIT_DIR=/foss/pdks/ihp-sg13cmos5l/libs.tech/ngspice" \
+               -e "KLAYOUT_PATH=/foss/pdks/ihp-sg13cmos5l/libs.tech/klayout" \
 			   -v /etc/group:/etc/group:ro \
                -v /etc/passwd:/etc/passwd:ro \
                -v /etc/shadow:/etc/shadow:ro \

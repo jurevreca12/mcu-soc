@@ -18,7 +18,10 @@ sources:
     - rtl/mcu_soc_pkg.sv
     - rtl/mcu_soc.sv
     - tb/mcu_soc_tb.sv
+    - tb/mcu_chip_tb.sv
     - tb/mcu_soc_jtag_tb.sv
+    - tb/mcu_chip_jtag_tb.sv
+    - pdks/tc_clk.sv
 
     - target: asic
       files:
