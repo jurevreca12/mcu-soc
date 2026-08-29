@@ -22,6 +22,14 @@ RISCV_STRIP   ?= $(RISCV_PREFIX)strip
 RISCV_BIN2HEX ?= riscv32-unknown-elf-bin2hex
 DEBUG ?= 0
 
+CURDIR = $(shell pwd)
+
+COREMARK_DIR = ./coremark
+export PORT_DIR = $(CURDIR)/coremark_port
+export ITERATIONS = 5000
+export OPATH = /foss/designs/mcu-soc/sw/coremark_port 
+#$(PORT_DIR)
+
 # Compiler and linker flags
 RISCV_FLAGS ?= -march=$(RISCV_MARCH) -mabi=$(RISCV_MABI) -mcmodel=medany \
 	-static -std=gnu99 -nostdlib -fno-builtin -ffreestanding
@@ -104,11 +112,15 @@ $(BINDIR)/%.bin: $(BINDIR)/%.elf
 $(BINDIR)/%.hex: $(BINDIR)/%.bin
 	$(RISCV_BIN2HEX) -w 32 $< $@
 
+coremark:
+	$(MAKE) -C $(COREMARK_DIR)
+
 # Phonies
-.PHONY: all clean compile
+.PHONY: all clean compile coremark
 
 clean:
 	rm -rf $(BINDIR) $(BUILDDIR)
+	$(MAKE) -C $(COREMARK_DIR) clean
 
 compile: $(BINDIR) $(BUILDDIR) $(ALL_TARGETS)
 
