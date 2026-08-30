@@ -1,7 +1,7 @@
 module mcu_soc_xilinx import mcu_soc_pkg::*; #(
   parameter  string INIT_FILE="",
   parameter  int    INIT_FILE_BIN=0,
-  parameter  int    MEM_SIZE_WORDS=2048,
+  parameter  int    MEM_SIZE_WORDS=12288,
   parameter  int    GPIO_NUM_IN=4,
   parameter  int    GPIO_NUM_OUT=4,
   parameter  int    SPI_NUM_SLAVES=1

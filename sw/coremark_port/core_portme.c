@@ -58,12 +58,14 @@ volatile ee_s32 seed3_volatile = 0x8;
 volatile ee_s32 seed4_volatile = ITERATIONS;
 volatile ee_s32 seed5_volatile = 0;
 
-
-static inline ee_u32 read_mcycle(void) {
-    ee_u32 lo;
+static inline ee_u64 read_mcycle(void)
+{
+    ee_u32 hi, lo;
+    hi = *timer_high;
     lo = *timer_low;
-    return lo;
+    return ((ee_u64)hi << 32) | lo;
 }
+
 
 /* Porting : Timing functions
         How to capture time and convert to seconds must be ported to whatever is
@@ -161,6 +163,7 @@ portable_init(core_portable *p, int *argc, char *argv[])
     p->portable_id = 1;
     *uart_config = 0x1;
     *uart_speed  = 5208;
+    ee_printf("Starting CoreMark with %d iterations.", ITERATIONS);
 }
 /* Function : portable_fini
         Target specific final code
@@ -168,8 +171,12 @@ portable_init(core_portable *p, int *argc, char *argv[])
 void
 portable_fini(core_portable *p)
 {
+    CORE_TICKS elapsed = get_time();
+    ee_printf("CoreMark time elapsed: %d\n", elapsed);
+    ee_printf("CoreMark ITERATIONS: %d\n", ITERATIONS);
+    ee_printf("Start time: %d\n", start_time_val);
+    ee_printf("Stop time: %d\n", stop_time_val);
     p->portable_id = 0;
-    uart_print_string("Portable Fini func\n");
 }
 
 void uart_send_char(char c) {
@@ -185,8 +192,13 @@ void uart_print_string(const char* str) {
     }
 }
 
-void trap_handler(int mcause) {
+void trap_handler(void) {
+    ee_u32 mcause, mepc, mtval, mstatus;
+    __asm__ volatile ("csrr %0, mcause"  : "=r"(mcause));
+    __asm__ volatile ("csrr %0, mepc"    : "=r"(mepc));
+    __asm__ volatile ("csrr %0, mtval"   : "=r"(mtval));
+    __asm__ volatile ("csrr %0, mstatus" : "=r"(mstatus));
+    ee_printf("TRAP! mcause: %d\r\nmepc: %d\r\nmtval: %d\r\nmstatus: %d\r\n", mcause, mepc, mtval, mstatus);
     while(1) {
-        uart_print_string("TRAP!\r\n");
     }
 }

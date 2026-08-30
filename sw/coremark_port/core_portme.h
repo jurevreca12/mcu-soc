@@ -87,14 +87,16 @@ void uart_send_char(char c);
         ee_ptr_int needs to be the data type used to hold pointers, otherwise
    coremark may fail!!!
 */
-typedef signed short   ee_s16;
-typedef unsigned short ee_u16;
-typedef signed int     ee_s32;
-typedef double         ee_f32;
-typedef unsigned char  ee_u8;
-typedef unsigned int   ee_u32;
-typedef ee_u32         ee_ptr_int;
-typedef ee_u32         ee_size_t;
+typedef signed short       ee_s16;
+typedef unsigned short     ee_u16;
+typedef signed int         ee_s32;
+typedef double             ee_f32;
+typedef unsigned char      ee_u8;
+typedef unsigned int       ee_u32;
+typedef unsigned long long ee_u64;
+typedef ee_u32             ee_ptr_int;
+typedef ee_u32             ee_size_t;
+typedef ee_u32             secs_ret;
 #define NULL ((void *)0)
 /* align_mem :
         This macro is used to align an offset to point to a 32b value. It is
@@ -105,7 +107,7 @@ typedef ee_u32         ee_size_t;
 /* Configuration : CORE_TICKS
         Define type of return from the timing functions.
  */
-#define CORETIMETYPE ee_u32
+#define CORETIMETYPE ee_u64
 typedef ee_u32 CORE_TICKS;
 
 /* Configuration : SEED_METHOD

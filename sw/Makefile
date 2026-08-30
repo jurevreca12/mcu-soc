@@ -26,7 +26,7 @@ CURDIR = $(shell pwd)
 
 COREMARK_DIR = ./coremark
 export PORT_DIR = $(CURDIR)/coremark_port
-export ITERATIONS = 5000
+export ITERATIONS = 1000
 export OPATH = /foss/designs/mcu-soc/sw/coremark_port 
 #$(PORT_DIR)
 
