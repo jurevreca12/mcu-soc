@@ -58,7 +58,7 @@ volatile ee_s32 seed3_volatile = 0x8;
 volatile ee_s32 seed4_volatile = ITERATIONS;
 volatile ee_s32 seed5_volatile = 0;
 
-static inline ee_u64 read_mcycle(void)
+static ee_u64 read_mcycle(void)
 {
     ee_u32 hi, lo;
     hi = *timer_high;
@@ -174,8 +174,14 @@ portable_fini(core_portable *p)
     CORE_TICKS elapsed = get_time();
     ee_printf("CoreMark time elapsed: %d\n", elapsed);
     ee_printf("CoreMark ITERATIONS: %d\n", ITERATIONS);
-    ee_printf("Start time: %d\n", start_time_val);
-    ee_printf("Stop time: %d\n", stop_time_val);
+    //ee_printf("Start time: %d\n", start_time_val);
+    //ee_printf("Stop time: %d\n", stop_time_val);
+    ee_u32 start_lo = (ee_u32)start_time_val;
+    ee_u32 start_hi = (ee_u32)(start_time_val >> 32);
+    ee_u32 stop_lo  = (ee_u32)stop_time_val;
+    ee_u32 stop_hi  = (ee_u32)(stop_time_val >> 32);
+    ee_printf("Start HI: %x LO: %x\n", start_hi, start_lo);
+    ee_printf("Stop  HI: %x LO: %x\n", stop_hi, stop_lo);
     p->portable_id = 0;
 }
 
@@ -198,7 +204,7 @@ void trap_handler(void) {
     __asm__ volatile ("csrr %0, mepc"    : "=r"(mepc));
     __asm__ volatile ("csrr %0, mtval"   : "=r"(mtval));
     __asm__ volatile ("csrr %0, mstatus" : "=r"(mstatus));
-    ee_printf("TRAP! mcause: %d\r\nmepc: %d\r\nmtval: %d\r\nmstatus: %d\r\n", mcause, mepc, mtval, mstatus);
+    ee_printf("TRAP! mcause: 0x%x\r\nmepc: 0x%x\r\nmtval: 0x%x\r\nmstatus: 0x%x\r\n", mcause, mepc, mtval, mstatus);
     while(1) {
     }
 }
