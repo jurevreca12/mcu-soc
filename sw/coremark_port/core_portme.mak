@@ -31,7 +31,7 @@ LD		= riscv64-unknown-elf-gcc
 AS		= riscv64-unknown-elf-gcc
 # Flag : CFLAGS
 #	Use this flag to define compiler options. Note, you can add compiler options from the command line using XCFLAGS="other flags"
-PORT_CFLAGS = -O3 -g -march=rv32i_zicsr -mabi=ilp32 -static -mcmodel=medlow -funroll-all-loops -finline-functions -falign-jumps=4 -nostdlib -nostartfiles -ffreestanding -mstrict-align -DPERFORMANCE_RUN=1
+PORT_CFLAGS = -O3 -g -march=rv32ic_zicsr -mabi=ilp32 -static -mcmodel=medlow -funroll-all-loops -finline-functions -falign-jumps=4 -nostdlib -nostartfiles -ffreestanding -mstrict-align -DPERFORMANCE_RUN=1
 FLAGS_STR = "$(PORT_CFLAGS) $(XCFLAGS) $(XLFLAGS) $(LFLAGS_END)"
 CFLAGS = $(PORT_CFLAGS) -I$(PORT_DIR) -I. -DFLAGS_STR=\"$(FLAGS_STR)\" 
 #Flag : LFLAGS_END
@@ -41,8 +41,8 @@ CFLAGS = $(PORT_CFLAGS) -I$(PORT_DIR) -I. -DFLAGS_STR=\"$(FLAGS_STR)\"
 # Flag : SEPARATE_COMPILE
 # You must also define below how to create an object file, and how to link.
 OBJOUT 	= -o
-LFLAGS 	= -march=rv32i_zicsr -mabi=ilp32
-ASFLAGS = -march=rv32i_zicsr -mabi=ilp32
+LFLAGS 	= -march=rv32ic_zicsr -mabi=ilp32
+ASFLAGS = -march=rv32ic_zicsr -mabi=ilp32
 OFLAG 	= -o
 COUT 	= -c
 
