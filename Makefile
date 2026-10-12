@@ -52,24 +52,3 @@ clean:
 	rm -f trace.fst
 	rm -rf obj_dir/
 	$(MAKE) -C sw/ clean
-
-docker-build:
-	docker build -t iic-osic-tools-mcu-plus:0.1 .
-
-docker-run-it:
-	docker run -it \
-			   --network host \
-			   --user ${CUID}:${CGID} \
-			   -e "UID=${CUID}" \
-			   -e "GID=${CGID}" \
-               -e "PDK=ihp-sg13cmos5l" \
-               -e "PDKPATH=/foss/pdks/ihp-sg13cmos5l" \
-               -e "STD_CELL_LIBRARY=sg13cmos5l_stdcell" \
-               -e "SPICE_USERINIT_DIR=/foss/pdks/ihp-sg13cmos5l/libs.tech/ngspice" \
-               -e "KLAYOUT_PATH=/foss/pdks/ihp-sg13cmos5l/libs.tech/klayout" \
-			   -v /etc/group:/etc/group:ro \
-               -v /etc/passwd:/etc/passwd:ro \
-               -v /etc/shadow:/etc/shadow:ro \
-			   -v ~/.cache/:/headless/.cache:rw \
-			   -v $(CWD):/foss/designs/mcu-soc \
-				$(DOCKER_ADD_XILINX_PATH) iic-osic-tools-mcu-plus:0.1 -s /bin/bash
