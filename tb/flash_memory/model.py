@@ -65,9 +65,8 @@ class FlashMemoryModel:
         print(f'memory::{self._memory}')
 
     def read(self, address: int) -> int:
-        print(f"Reading address: {address}")
         if address >= len(self._memory):
-            print("WARNING: Reading from uninitialized memory!!!")
+            print("WARNING: Address: {address}. Reading from uninitialized memory!!!")
             return self._random.getrandbits(8)
         return self._memory[address]
     
