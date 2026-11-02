@@ -1,42 +1,16 @@
-.PHONY: nextpnr vivado clean yosys openroad
+.PHONY: all clean ihp_sg13cmos5l nexys_a7100t
 
-nextpnr:
+ihp_sg13cmos5l:
+	cd ihp-sg13cmos5l && $(MAKE) all
+
+nexys_a7100t:
 	cd nexys-A7100T && $(MAKE) all
 
-vivado:
-	cd vivado && $(MAKE) all
-
-yosys:
-	cd yosys && $(MAKE) yosys
-
-floorplan: yosys
-	cd openroad && $(MAKE) floorplan
-
-placement: floorplan
-	cd openroad && $(MAKE) placement
-
-cts: placement
-	cd openroad && $(MAKE) cts
-
-routing: cts
-	cd openroad && $(MAKE) routing
-
-finishing: routing
-	cd openroad && $(MAKE) finishing
-
-cdl: finishing
-	cd openroad && $(MAKE) cdl
-
-openroad:
-	cd openroad && $(MAKE) all
-
-klayout:
-	cd klayout && $(MAKE) gds
+all: ihp_sg13cmos5l nexys_a7100t
 
 clean:
-	rm *.jou -f
-	rm *.log -f
-	rm -rf ./vivado/output/ -f
+	cd ihp-sg13cmos5l && $(MAKE) clean
+	cd nexys-A7100T && $(MAKE) clean
 
 
 
