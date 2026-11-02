@@ -1,5 +1,5 @@
 module mcu_soc_xilinx import mcu_soc_pkg::*; #(
-  parameter  string INIT_FILE="text.hex",
+  parameter  string INIT_FILE="",
   parameter  int    INIT_FILE_BIN=0,
   parameter  int    MEM_SIZE_WORDS=2048,
   parameter  int    GPIO_NUM_IN=4,
@@ -32,7 +32,7 @@ module mcu_soc_xilinx import mcu_soc_pkg::*; #(
     .clk_i       (clk),
     .rst_ni      (~rst),
     .test_mode_i (1'b0),
-    .rst_no      (synced_rst_n;
+    .rst_no      (synced_rst_n),
     .init_no     ()
   );
 

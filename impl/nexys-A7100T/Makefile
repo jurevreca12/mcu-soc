@@ -1,4 +1,4 @@
-.PHONY: all pnr bitgen clean
+.PHONY: all pnr bitgen clean program
 
 SHELL=bash
 
@@ -29,6 +29,9 @@ output/mcu_soc.bit: output/mcu_soc.fasm
 	fpga-as --prjxray_db_path=/foss/tools/prjxray-db/artix7 \
 		--part=xc7a100tcsg324-1 \
 		< output/mcu_soc.fasm > output/mcu_soc.bit
+
+program:
+	openFPGALoader -b nexys_a7_100 output/mcu_soc.bit
 
 #output/mcu_soc.frames: output/mcu_soc.fasm
 #	fasm2frames --part xc7a100tcsg324-1 \

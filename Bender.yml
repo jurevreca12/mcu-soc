@@ -25,4 +25,4 @@ sources:
 
     - target: xilinx
       files:
-        - impl/vivado/mcu_soc_xilinx.sv
+        - impl/nexys-A7100T/mcu_soc_xilinx.sv
