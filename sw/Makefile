@@ -76,7 +76,7 @@ DEPFILES := $(CRT0_OBJ:.o=.d) $(LIB_OBJS:.o=.d) $(PROG_OBJS:.o=.d)
 # Ensure intermediate object files are not deleted after linking
 .SECONDARY: $(CRT0_OBJ) $(LIB_OBJS) $(PROG_OBJS)
 
-all: compile
+all: compile coremark
 
 $(BINDIR):
 	mkdir -p $(BINDIR)
@@ -112,15 +112,17 @@ $(BINDIR)/%.bin: $(BINDIR)/%.elf
 $(BINDIR)/%.hex: $(BINDIR)/%.bin
 	$(RISCV_BIN2HEX) -w 32 $< $@
 
-coremark:
+coremark: $(BINDIR) $(BUILDDIR)
 	$(MAKE) -C $(COREMARK_DIR)
+	mv $(COREMARK_DIR)/run1.log $(BUILDDIR)/coremark_run1.log
+	mv $(COREMARK_DIR)/run2.log $(BUILDDIR)/coremark_run2.log
+	mv $(COREMARK_DIR)/coremark.bin $(BINDIR)/coremark.bin
 
 # Phonies
 .PHONY: all clean compile coremark
 
 clean:
 	rm -rf $(BINDIR) $(BUILDDIR)
-	$(MAKE) -C $(COREMARK_DIR) clean
 
 compile: $(BINDIR) $(BUILDDIR) $(ALL_TARGETS)
 
